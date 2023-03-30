@@ -4,12 +4,11 @@ import {WebView} from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import base64 from 'react-native-base64';
+import {CLIENT_ID, CLIENT_SECRET, REDIRECT_URI} from '@env';
 
-const clientID = 'd415d43aff264b4782a932529f87dc76';
-const clientSecret = '507bce648e454a97ba4be3d2b93e7eb1';
-const redirectURI = 'myapp://spotify-auth-callback';
+const REDIRECT_URI = 'myapp://spotify-auth-callback';
 
-const authURL = `https://accounts.spotify.com/authorize?client_id=${clientID}&response_type=code&redirect_uri=${encodeURIComponent(redirectURI)}&scope=user-read-private`;
+const authURL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=user-read-private`;
 
 const SpotifyLogin = () => {
   const [accessToken, setAccessToken] = useState(null);
@@ -32,11 +31,11 @@ const SpotifyLogin = () => {
           params: {
             grant_type: 'authorization_code',
             code,
-            redirect_uri: redirectURI,
+            redirect_uri: REDIRECT_URI,
           },
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Basic ${base64.encode(`${clientID}:${clientSecret}`)}`,
+            Authorization: `Basic ${base64.encode(`${CLIENT_ID}:${CLIENT_SECRET}`)}`,
           },
         });
         console.log(response.data);
