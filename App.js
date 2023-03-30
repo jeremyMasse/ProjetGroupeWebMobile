@@ -3,8 +3,7 @@ import Routes from './src/config/routes';
 
 const App = () => {
   return (
-    <Routes />
-
+    <Routes/>
   );
 };
 
