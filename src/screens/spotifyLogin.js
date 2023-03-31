@@ -1,47 +1,50 @@
 import React, {useState, useEffect} from 'react';
 import {Button, View, Text, Linking} from 'react-native';
-import {WebView} from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import base64 from 'react-native-base64';
 import {CLIENT_ID, CLIENT_SECRET, REDIRECT_URI} from '@env';
+import {
+  requestAccessToken,
+  fetchUserData,
+} from '../services/AuthSpotify.services';
 
-const REDIRECT_URI = 'myapp://spotify-auth-callback';
-
-const authURL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=user-read-private`;
+const authURL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
+  REDIRECT_URI,
+)}&scope=user-read-private user-read-email`;
 
 const SpotifyLogin = () => {
   const [accessToken, setAccessToken] = useState(null);
-  const [webViewVisible, setWebViewVisible] = useState(false);
   const [userData, setUserData] = useState(null);
 
+  const fetchAccessToken = async () => {
+    const storedAccessToken = await AsyncStorage.getItem('accessToken');
+    if (storedAccessToken) {
+      setAccessToken(storedAccessToken);
+    }
+  };
+
   useEffect(() => {
-    const fetchAccessToken = async () => {
-      const storedAccessToken = await AsyncStorage.getItem('accessToken');
-      if (storedAccessToken) {
-        setAccessToken(storedAccessToken);
-      }
-    };
     fetchAccessToken();
-   
-    const handleOpenURL = async (event) => {
+
+    const handleOpenURL = async event => {
       const code = event.url.split('code=')[1];
       if (code) {
-        const response = await axios.post('https://accounts.spotify.com/api/token', null, {
-          params: {
-            grant_type: 'authorization_code',
-            code,
-            redirect_uri: REDIRECT_URI,
-          },
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Basic ${base64.encode(`${CLIENT_ID}:${CLIENT_SECRET}`)}`,
-          },
-        });
-        console.log(response.data);
-        const {access_token} = response.data;
-        setAccessToken(access_token);
-        await AsyncStorage.setItem('accessToken', access_token);
+        const {access_token, expires_in} = await requestAccessToken(
+          code,
+          CLIENT_ID,
+          CLIENT_SECRET,
+          REDIRECT_URI,
+        );
+
+        if (access_token && expires_in) {
+          const expirationTime = new Date().getTime() + expires_in * 1000;
+          await AsyncStorage.setItem(
+            'accessTokenExpiration',
+            expirationTime.toString(),
+          );
+
+          setAccessToken(access_token);
+          await AsyncStorage.setItem('accessToken', access_token);
+        }
       }
     };
 
@@ -56,14 +59,22 @@ const SpotifyLogin = () => {
     console.log('accessToken', accessToken);
   }, [userData, accessToken]);
 
-  const fetchUserData = async () => {
-    if (!accessToken) return;
+  const handleFetchUserData = async () => {
+    if (!accessToken) {
+      return;
+    }
+    const expirationTime = await AsyncStorage.getItem('accessTokenExpiration');
 
-    const headers = {Authorization: `Bearer ${accessToken}`};
+    if (new Date().getTime() > parseInt(expirationTime, 10)) {
+      // Supprimer le jeton d'accès et demander à l'utilisateur de se reconnecter
+      await AsyncStorage.removeItem('accessToken');
+      await AsyncStorage.removeItem('accessTokenExpiration');
+      setAccessToken(null);
+      return;
+    }
 
-    // Récupérer les informations de l'utilisateur
-    const userResponse = await axios.get('https://api.spotify.com/v1/me', {headers});
-    setUserData(userResponse.data);
+    const fetchedUserData = await fetchUserData(accessToken);
+    setUserData(fetchedUserData);
   };
 
   return (
@@ -76,7 +87,10 @@ const SpotifyLogin = () => {
       )}
       {accessToken && (
         <>
-          <Button title="Récupérer les informations de l'utilisateur" onPress={fetchUserData} />
+          <Button
+            title="Récupérer les informations de l'utilisateur"
+            onPress={handleFetchUserData}
+          />
           {userData && (
             <Text>
               Connecté en tant que : {userData.display_name} ({userData.email})
