@@ -5,6 +5,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import styled from 'styled-components';
+import Counter from "../components/Counter";
 
 
 const Home = () => {
@@ -13,6 +14,7 @@ const Home = () => {
     return (
         <View>
             <Text>Playlist Generator</Text>
+            <Counter />
         </View>
     )
 }
