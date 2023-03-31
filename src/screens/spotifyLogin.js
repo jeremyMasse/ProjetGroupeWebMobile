@@ -1,19 +1,23 @@
 import React, {useState, useEffect} from 'react';
 import {Button, View, Text, Linking} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CLIENT_ID, CLIENT_SECRET, REDIRECT_URI} from '@env';
 import {
   requestAccessToken,
   fetchUserData,
 } from '../services/AuthSpotify.services';
+import {saveUser} from '../actions/user';
 
-const authURL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
-  REDIRECT_URI,
-)}&scope=user-read-private user-read-email`;
+const SpotifyLogin = ({navigation}) => {
+  const authURL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
+    REDIRECT_URI,
+  )}&scope=user-read-private,playlist-modify-public`;
 
-const SpotifyLogin = () => {
   const [accessToken, setAccessToken] = useState(null);
-  const [userData, setUserData] = useState(null);
+  const dispatch = useDispatch();
+  const {user} = useSelector(state => state.user);
 
   const fetchAccessToken = async () => {
     const storedAccessToken = await AsyncStorage.getItem('accessToken');
@@ -47,35 +51,41 @@ const SpotifyLogin = () => {
         }
       }
     };
-
     Linking.addEventListener('url', handleOpenURL);
-    return () => {
-      Linking.removeEventListener('url', handleOpenURL);
-    };
   }, []);
 
   useEffect(() => {
-    console.log('userData', userData);
-    console.log('accessToken', accessToken);
-  }, [userData, accessToken]);
+    const handleFetchUserData = async () => {
+      if (!accessToken && Object.keys(user).length === 0) {
+        return;
+      }
+      const expirationTime = await AsyncStorage.getItem(
+        'accessTokenExpiration',
+      );
 
-  const handleFetchUserData = async () => {
-    if (!accessToken) {
-      return;
-    }
-    const expirationTime = await AsyncStorage.getItem('accessTokenExpiration');
+      if (new Date().getTime() > parseInt(expirationTime, 10)) {
+        // Supprimer le jeton d'accès et demander à l'utilisateur de se reconnecter
+        await AsyncStorage.removeItem('accessToken');
+        await AsyncStorage.removeItem('accessTokenExpiration');
+        setAccessToken(null);
+        return;
+      }
 
-    if (new Date().getTime() > parseInt(expirationTime, 10)) {
-      // Supprimer le jeton d'accès et demander à l'utilisateur de se reconnecter
-      await AsyncStorage.removeItem('accessToken');
-      await AsyncStorage.removeItem('accessTokenExpiration');
-      setAccessToken(null);
-      return;
-    }
+      fetchUserData(accessToken)
+        .then(userResponse => {
+          console.log(userResponse);
+          dispatch(saveUser(userResponse));
+        })
+        .catch(error => {
+          console.error(error);
+        })
+        .finally(() => {
+          navigation.navigate('generatePlaylist');
+        });
+    };
 
-    const fetchedUserData = await fetchUserData(accessToken);
-    setUserData(fetchedUserData);
-  };
+    handleFetchUserData();
+  }, [accessToken]);
 
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -87,13 +97,9 @@ const SpotifyLogin = () => {
       )}
       {accessToken && (
         <>
-          <Button
-            title="Récupérer les informations de l'utilisateur"
-            onPress={handleFetchUserData}
-          />
-          {userData && (
-            <Text>
-              Connecté en tant que : {userData.display_name} ({userData.email})
+          {user && (
+            <Text style={{color: 'black'}}>
+              Connecté en tant que : {user.display_name} ({user.email})
             </Text>
           )}
         </>
