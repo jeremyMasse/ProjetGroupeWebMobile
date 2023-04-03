@@ -5,12 +5,24 @@ import {View, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components';
 import jwtDecode from 'jwt-decode';
+import {
+  searchSong,
+  createPlaylist,
+  addToPlaylist,
+} from '../services/AuthSpotify.services';
 import {OPENAI_API_KEY} from '@env';
 
 const GeneratePlaylist = ({navigation}) => {
   const dispatch = useDispatch();
   const [token, setToken] = useState(null);
   const {user} = useSelector(state => state.user);
+  const [trackList, setTrackList] = useState({
+    tracks: {items: []},
+  });
+  const [playlist, setPlaylist] = useState([]);
+  const [loadingTrackList, setloadingTrackList] = useState(true);
+  const [loadingPlaylist, setloadingPlaylist] = useState(true);
+  const [tempo, setTempo] = useState(20);
 
   const generate = async tempo => {
     // Appeler l'API OpenAI pour générer une liste de chansons de course à pied avec un tempo adapté à la vitesse de course de l'utilisateur
@@ -22,7 +34,8 @@ const GeneratePlaylist = ({navigation}) => {
           {
             role: 'user',
             content:
-              'you are an musician and fitness expert, make me a list of songs for a jogger that match the bpm of the jogger, his current bpm is 120 json format',
+              // 'You are an musician, fitness and JSON formatter expert. Could you make me a tracklist of 10 unpopular songs with a tempo that match my BPM. My BPM is currently at 110. The result must be in JSON Format with title and artist.',
+              "You are an musician, fitness and JSON formatter expert. Could you make me a tracklist of 10 unpopular songs with a tempo that match my BPM. My BPM is currently at 110. The result must be in JSON Format his structure is a main key called 'songs' it's an array of song each songs are composed of title and artist i only want the json no useless text with.",
           },
         ],
         // stop: ['\n'],
@@ -34,11 +47,34 @@ const GeneratePlaylist = ({navigation}) => {
         },
       },
     );
-    const songs = openaiResponse.data.choices.map(choice =>
-      console.log(choice),
-    );
+    const results = JSON.parse(openaiResponse.data.choices[0].message.content);
 
-    console.log(songs);
+    // let results = JSON.parse(
+    //   `{"songs": [{"artist": "Childish Gambino", "title": "Feels Like Summer"}, {"artist": "Willow", "title": "Wait a Minute!"}, {"artist": "Lost Kings feat. Wiz Khalifa & Social House", "title": "Don't Kill My High"}, {"artist": "Sofi Tukker feat. NERVO, The Knocks & Alisa Ueno", "title": "Best Friend"}, {"artist": "ZAYN feat. Snakehips", "title": "Cruel"}, {"artist": "Basenji feat. Tkay Maidza", "title": "Can't Get Enough"}, {"artist": "Major Lazer feat. Travis Scott, Camila Cabello & Quavo", "title": "Know No Better"}, {"artist": "G-Eazy feat. Halsey", "title": "Him & I"}, {"artist": "Juice WRLD", "title": "Lucid Dreams"}, {"artist": "Nickelback", "title": "Live It Up"}]}`,
+    // );
+    // console.log(fake);
+
+    // console.log('1', fake);
+    // const songs = openaiResponse.data.choices.map(choice => {
+    //   chatGptPlaylist = JSON.parse(choice.message.content);
+    // });
+
+    let items = [];
+    Object.entries(results.songs).map(([key, song]) => {
+      searchSong(token, song)
+        .then(res => {
+          setTrackList(prevState => {
+            let newValues = {...prevState};
+            newValues.tracks.items.push(res.tracks.items[0].uri);
+            return newValues;
+          });
+        })
+        .catch(err => console.log(err))
+        .finally(() => {
+          setloadingTrackList(false);
+        });
+    });
+
     // const spotifyResponse = await axios.get(
     //   'https://api.spotify.com/v1/search',
     //   {
@@ -90,17 +126,37 @@ const GeneratePlaylist = ({navigation}) => {
   };
 
   useEffect(() => {
+    if (loadingTrackList === false) {
+      createPlaylist(token, user, tempo)
+        .then(res => {
+          setPlaylist(res);
+        })
+        .finally(() => {
+          setloadingPlaylist(false);
+        });
+    }
+  }, [loadingTrackList]);
+
+  useEffect(() => {
+    if (loadingPlaylist === false) {
+      console.log(playlist.id);
+      addToPlaylist(token, playlist.id, trackList.tracks.items);
+    }
+  }, [loadingPlaylist]);
+
+  useEffect(() => {
     //AsyncStorage.removeItem("accessToken");
     AsyncStorage.getItem('accessToken').then(token => {
       setToken(token);
     });
   }, []);
+
   return (
     <Container>
       <StyledText>{user.id}</StyledText>
       <StyledTouchable
         onPress={() => {
-          generate(120);
+          generate(tempo);
         }}>
         <StyledText>generate</StyledText>
       </StyledTouchable>
@@ -111,10 +167,13 @@ const GeneratePlaylist = ({navigation}) => {
 const Container = styled.View``;
 const StyledText = styled.Text`
   color: black;
-  font-size: 12px;
+  font-size: 20px;
 `;
 const StyledTouchable = styled.TouchableOpacity`
   border: 1px;
   border-color: black;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
 `;
 export default GeneratePlaylist;
