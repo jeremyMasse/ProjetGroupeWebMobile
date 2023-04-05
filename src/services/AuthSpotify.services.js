@@ -44,6 +44,7 @@ export const searchSong = async (accessToken, song) => {
       q: `${song.title.trim()}&artists=${song.artist.trim()}`,
       type: 'track',
       market: 'US',
+      limit: 1,
     },
   });
   return response.data;

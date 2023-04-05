@@ -11,6 +11,7 @@ import {
   addToPlaylist,
 } from '../services/AuthSpotify.services';
 import {OPENAI_API_KEY} from '@env';
+import CardRow from '../components/CardRow';
 
 const GeneratePlaylist = ({navigation}) => {
   const dispatch = useDispatch();
@@ -19,10 +20,13 @@ const GeneratePlaylist = ({navigation}) => {
   const [trackList, setTrackList] = useState({
     tracks: {items: []},
   });
+
+  const [trackUris, setTrackUris] = useState([]);
+
   const [playlist, setPlaylist] = useState([]);
   const [loadingTrackList, setloadingTrackList] = useState(true);
   const [loadingPlaylist, setloadingPlaylist] = useState(true);
-  const [tempo, setTempo] = useState(20);
+  const [tempo, setTempo] = useState(110);
 
   const generate = async tempo => {
     // Appeler l'API OpenAI pour générer une liste de chansons de course à pied avec un tempo adapté à la vitesse de course de l'utilisateur
@@ -35,7 +39,7 @@ const GeneratePlaylist = ({navigation}) => {
             role: 'user',
             content:
               // 'You are an musician, fitness and JSON formatter expert. Could you make me a tracklist of 10 unpopular songs with a tempo that match my BPM. My BPM is currently at 110. The result must be in JSON Format with title and artist.',
-              "You are an musician, fitness and JSON formatter expert. Could you make me a tracklist of 10 unpopular songs with a tempo that match my BPM. My BPM is currently at 110. The result must be in JSON Format his structure is a main key called 'songs' it's an array of song each songs are composed of title and artist i only want the json no useless text with.",
+              "You are an musician, fitness and JSON formatter expert. Could you make me a tracklist of 2 unpopular songs with a tempo that match my BPM. My BPM is currently at 110. The result must be in JSON Format his structure is a main key called 'songs' it's an array of song each songs are composed of title and artist i only want the json no useless text with.",
           },
         ],
         // stop: ['\n'],
@@ -62,16 +66,23 @@ const GeneratePlaylist = ({navigation}) => {
     let items = [];
     Object.entries(results.songs).map(([key, song]) => {
       searchSong(token, song)
-        .then(res => {
-          setTrackList(prevState => {
-            let newValues = {...prevState};
-            newValues.tracks.items.push(res.tracks.items[0].uri);
-            return newValues;
-          });
-        })
+      .then(res => {
+        setTrackList(prevState => {
+          return {
+            ...prevState,
+            tracks: {
+              ...prevState.tracks,
+              items: [...prevState.tracks.items, ...res.tracks.items]
+            }
+          };
+        });
+      })
         .catch(err => console.log(err))
         .finally(() => {
           setloadingTrackList(false);
+          trackList.tracks.items.map(item => {
+            console.log(item.uri);
+          });
         });
     });
 
@@ -137,17 +148,31 @@ const GeneratePlaylist = ({navigation}) => {
     }
   }, [loadingTrackList]);
 
-  useEffect(() => {
-    if (loadingPlaylist === false) {
-      console.log(playlist.id);
-      addToPlaylist(token, playlist.id, trackList.tracks.items);
-    }
-  }, [loadingPlaylist]);
+  // useEffect(() => {
+  //   if (loadingPlaylist === false) {
+  //     console.log("test");
+  //     // console.log(playlist.id);
+
+
+  //     console.log("Track uris : " + trackUris);
+  //     addToPlaylist(token, playlist.id, trackUris);
+      
+  //   }
+  // }, [loadingPlaylist]);
+
+  const addToSpotify = async () => {
+    trackList.tracks.items.map(item => {
+      addToPlaylist(token, playlist.id, [item.uri])
+    })
+
+    navigation.navigate('Playlist', {playlist: playlist.id});
+  };
 
   useEffect(() => {
     //AsyncStorage.removeItem("accessToken");
     AsyncStorage.getItem('accessToken').then(token => {
       setToken(token);
+      console.log(token);
     });
   }, []);
 
@@ -160,20 +185,47 @@ const GeneratePlaylist = ({navigation}) => {
         }}>
         <StyledText>generate</StyledText>
       </StyledTouchable>
+      {!loadingTrackList ? (
+        <>
+        {trackList.tracks.items.map(song => (
+          <CardRow 
+          key={song.id} 
+          img={song.album.images[0].url}
+          width={50}
+          height={50}
+          title={song.name} 
+          artist={song.artists[0].name}
+          hasActions={true}
+          />
+          ))}
+
+
+        <StyledTouchable onPress={() => {addToSpotify()}}>
+          <StyledText>Add Playlist to Spotify</StyledText>
+        </StyledTouchable>
+        </>
+      ) : (<StyledText>Loading</StyledText>)
+      }
+
     </Container>
   );
 };
 
-const Container = styled.View``;
+const Container = styled.View`
+background: #121212;
+flex: 1;
+`;
 const StyledText = styled.Text`
-  color: black;
+  color: white;
   font-size: 20px;
 `;
 const StyledTouchable = styled.TouchableOpacity`
   border: 1px;
-  border-color: black;
+  border-color: white;
   padding: 10px;
   justify-content: center;
   align-items: center;
 `;
+
+
 export default GeneratePlaylist;

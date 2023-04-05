@@ -8,16 +8,17 @@ import {
   requestAccessToken,
   fetchUserData,
 } from '../services/AuthSpotify.services';
-import {saveUser} from '../actions/user';
+import {saveUser, saveToken} from '../actions/user';
 
 const SpotifyLogin = ({navigation}) => {
   const authURL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
     REDIRECT_URI,
-  )}&scope=user-read-private,playlist-modify-public`;
+  )}&scope=user-read-private,playlist-modify-public,user-modify-playback-state`;
 
   const [accessToken, setAccessToken] = useState(null);
   const dispatch = useDispatch();
-  const {user} = useSelector(state => state.user);
+  const {user} = useSelector(state => state.user.user);
+  const token = useSelector(state => state.user.token);
 
   const fetchAccessToken = async () => {
     const storedAccessToken = await AsyncStorage.getItem('accessToken');
@@ -27,6 +28,8 @@ const SpotifyLogin = ({navigation}) => {
   };
 
   useEffect(() => {
+
+
     fetchAccessToken();
 
     const handleOpenURL = async event => {
@@ -47,6 +50,7 @@ const SpotifyLogin = ({navigation}) => {
           );
 
           setAccessToken(access_token);
+          dispatch(saveToken(access_token));
           await AsyncStorage.setItem('accessToken', access_token);
         }
       }
@@ -75,6 +79,7 @@ const SpotifyLogin = ({navigation}) => {
         .then(userResponse => {
           console.log(userResponse);
           dispatch(saveUser(userResponse));
+          dispatch(saveToken(accessToken));
         })
         .catch(error => {
           console.error(error);
