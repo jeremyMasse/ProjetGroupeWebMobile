@@ -1,0 +1,16 @@
+{
+  "header": {
+    "profil": "Profil",
+    "addPlaylist": "add playlist",
+    "spotifyLogin": "Login Spotify",
+    "library": "library",
+    "playlist": "Playlist",
+    "home": "Home"
+  },
+  "profil": {
+    "title": "Profil page"
+  },
+  "loginSpotify": {
+    "titleButton": "Connect to Spotify"
+  }
+}

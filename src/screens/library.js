@@ -62,12 +62,15 @@ const Library = () => {
   return (
     <LibraryView>
       <LibraryHeader>
-        <ProfilImage
-          style={{width: 35, height: 35}}
-          source={{
-            uri: user.images && user.images[0].url,
-          }}
-        />
+        {user.images?.length > 0 && (
+          <ProfilImage
+            style={{width: 35, height: 35}}
+            source={{
+              uri: user.images[0].url,
+            }}
+          />
+        )}
+
         <Title title="Your Library" />
         <AddIcon>
           <Icon name="add" color="white" size={35} />
@@ -92,7 +95,8 @@ const Library = () => {
                 width={75}
                 height={75}
                 artist={`Playlist - ${playlist.owner.display_name}`}
-                hasActions={true}>
+                hasActions={true}
+                key={playlist.id}>
                 <ActionRow
                   title="See Playlist"
                   icon="musical-notes-outline"

@@ -17,6 +17,7 @@ import {
   getPlaylistTracks,
   deleteTrackFromPlaylist,
 } from '../services/Playlist.service';
+
 const Playlist = ({route}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -116,7 +117,7 @@ const Playlist = ({route}) => {
           color="#fff"
           onPress={() => navigation.navigate('Library')}
         />
-        {playlist.images && playlist.images[0] && playlist.images[0].url && (
+        {playlist.images?.length > 0 && (
           <PlaylistImage
             source={{uri: playlist.images && playlist.images[0].url}}
             style={{width: 200, height: 200}}
@@ -124,12 +125,14 @@ const Playlist = ({route}) => {
         )}
         <Title title={playlist.name} />
         <Owner>
-          <OwnerImage
-            style={{width: 25, height: 25}}
-            source={{
-              uri: user.images && user.images[0].url,
-            }}
-          />
+          {user.images?.length > 0 && (
+            <OwnerImage
+              style={{width: 35, height: 35}}
+              source={{
+                uri: user.images[0].url,
+              }}
+            />
+          )}
           <OwnerName>{playlist.owner && playlist.owner.display_name}</OwnerName>
         </Owner>
       </PlaylistHeader>
