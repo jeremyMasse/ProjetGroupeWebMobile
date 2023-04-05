@@ -35,7 +35,7 @@ export const getPlaylistTracks = async (access_token, playlist_id) => {
   return response.data
 }
 
-export const deleteTrackFromPlaylist = (access_token, playlist_id, track_uri, track_name, playlist_name) => {
+export const deleteTrackFromPlaylist = (access_token, playlist_id, track_uri, track_name, playlist_name, setTracks) => {
   const headers = {Authorization: `Bearer ${access_token}`};
   axios({
     method: 'delete',
@@ -54,6 +54,9 @@ export const deleteTrackFromPlaylist = (access_token, playlist_id, track_uri, tr
       text1: `${track_name}`,
       text2: `has been removed from ${playlist_name}`
     });
+
+    // Update Tracks avec suppression de la track 
+    setTracks(prevTracks => prevTracks.filter(track => track.track.uri !== track_uri));
   })
   .catch(error => {
     Toast.show({

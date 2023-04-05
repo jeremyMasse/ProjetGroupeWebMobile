@@ -59,18 +59,18 @@ const TabNavigator = () => (
         component={GeneratePlaylist}
         options={{
           tabBarLabel: 'Add Playlist',
-          tabBarIcon: (tabLibrary) => {
+          tabBarIcon: (tabGeneratePlaylist) => {
             return (
               <Vinyle
                 name="record-vinyl"
                 size={24}
-                color={tabLibrary.focused ? "#fff" : "#8e8e93"}
+                color={tabGeneratePlaylist.focused ? "#fff" : "#8e8e93"}
               />
             );
           }
         }}
       />
-       <Tab.Screen
+      <Tab.Screen
         name="Library"
         component={Library}
         options={{
@@ -86,7 +86,8 @@ const TabNavigator = () => (
           }
         }}
       />
-      <Stack.Screen
+
+      <Tab.Screen
       name="Playlist"
       component={Playlist}
       options={{
@@ -102,12 +103,12 @@ const TabNavigator = () => (
         component={SpotifyLogin}
         options={{
           tabBarLabel: 'Spotify Login',
-          tabBarIcon: (tabLibrary) => {
+          tabBarIcon: (tabAccount) => {
             return (
               <Icon
                 name="person-outline"
                 size={24}
-                color={tabLibrary.focused ? "#fff" : "#8e8e93"}
+                color={tabAccount.focused ? "#fff" : "#8e8e93"}
               />
             );
           }
@@ -136,13 +137,7 @@ const Routes = () => {
          screenOptions={{
           headerShown: false,
           }}>
-          
           <Stack.Screen name="TabNavigator" component={TabNavigator} options={{headerShown: false}} />
-          <Stack.Screen name="SpotifyLogin" component={SpotifyLogin} />
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Library" component={Library}/>
-          <Stack.Screen name="Playlist" component={Playlist} options={{headerShown:false}}/>
-          <Stack.Screen name="generatePlaylist" component={GeneratePlaylist} />
         </Stack.Navigator>
 
       </NavigationContainer>

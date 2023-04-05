@@ -66,8 +66,9 @@ const Library = () => {
       }).catch(error => {
         console.log(error);
       });
-    
-  }, [user.id])
+
+      console.log("user");
+  }, [user.id, /*playlists*/])
 
  
     return (
@@ -76,7 +77,7 @@ const Library = () => {
               <ProfilImage
               style={{width: 35, height: 35}}
               source={{
-                uri: user.images[0].url,
+                uri: user.images && user.images[0].url,
               }} />
               <Title title="Your Library"/>
               <AddIcon>

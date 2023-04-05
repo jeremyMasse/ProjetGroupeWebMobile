@@ -44,29 +44,77 @@ const Playlist = ({route}) => {
       getPlaylistTracks(token, playlist_id)
         .then(res => setTracks(res.items))
         .catch(error => console.log(error));
-
-    }, [/*playlist*/])
-
-
-    const handlePlay =  (track) => {
-      console.log(track.track.uri);
-      console.log(token);
-      axios.put(`https://api.spotify.com/v1/me/player/play`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        "uris": [`${track.track.uri}`],
-        "position_ms": 0,
-      })
-    }).then(response => {
+    
       
-    }).catch(error => {console.log(error)});
+      
+    }, [route.params.playlist])
 
-    dispatch(player(true));
-    dispatch(saveTrack(track));
-    console.log(track.track);
+
+    const handlePlay = (track) => {
+    
+      // Get the user's available devices
+      axios.get('https://api.spotify.com/v1/me/player/devices', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }).then(response => {
+        const devices = response.data.devices;
+        console.log(response);
+        // Find an active device and start playback
+        const activeDevice = devices.find(device => device.is_active);
+        if (activeDevice) {
+          axios.put('https://api.spotify.com/v1/me/player/play', {
+            uris: [`${track.track.uri}`],
+            position_ms: 0
+          }, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            }
+          }).then(response => {
+            console.log(response);
+          }).catch(error => {
+            console.log(error);
+          });
+        } else {
+          // Transfer playback to the first available device
+          const firstDevice = devices[0];
+          axios.put(`https://api.spotify.com/v1/me/player`, {
+            device_ids: [firstDevice.id],
+            play: true
+          }, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            }
+          }).then(response => {
+            console.log(response);
+            // Start playback after transferring device
+            axios.put('https://api.spotify.com/v1/me/player/play', {
+              uris: [`${track.track.uri}`],
+              position_ms: 0
+            }, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              }
+            }).then(response => {
+              console.log(response);
+            }).catch(error => {
+              console.log(error);
+            });
+          }).catch(error => {
+            console.log(error);
+          });
+        }
+      }).catch(error => {
+        console.log(error.response.status);
+        console.log(error.response.data);
+      });
+      console.log(token);
+      // dispatch(player(true));
+      // dispatch(saveTrack(track));
+      // console.log(track.track.uri);
     };
     
 
@@ -74,7 +122,7 @@ const Playlist = ({route}) => {
         <PlaylistView>
             <PlaylistHeader>
               <Icon name="arrow-back" size={30} color="#fff" onPress={() => navigation.navigate('Library')} />
-              {tracks && tracks.length > 0 && (
+              {playlist.images && playlist.images[0] && playlist.images[0].url && (
               <PlaylistImage source={{uri: playlist.images && playlist.images[0].url}}
                 style={{width: 200, height: 200}}
               />
@@ -84,7 +132,7 @@ const Playlist = ({route}) => {
                 <OwnerImage
                 style={{width: 25, height: 25}}
                 source={{
-                  uri: user.images[0].url,
+                  uri: user.images && user.images[0].url,
                 }} />
                 <OwnerName>{playlist.owner && playlist.owner.display_name}</OwnerName>
               </Owner>
@@ -101,7 +149,7 @@ const Playlist = ({route}) => {
                   height={50}
                   hasActions={true}
                 >
-                  <ActionRow title="Remove from this playlist" icon="remove-circle-outline" onPress={() => deleteTrackFromPlaylist(token, playlist.id, track.track.uri, track.track.name, playlist.name)}/>
+                  <ActionRow title="Remove from this playlist" icon="remove-circle-outline" onPress={() => deleteTrackFromPlaylist(token, playlist.id, track.track.uri, track.track.name, playlist.name, setTracks)}/>
                   <ActionRow title="Share" icon="share-social-outline"/>
                 </CardRow>
               </Touchable>

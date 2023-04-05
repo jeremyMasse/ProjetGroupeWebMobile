@@ -161,10 +161,15 @@ const GeneratePlaylist = ({navigation}) => {
   // }, [loadingPlaylist]);
 
   const addToSpotify = async () => {
+
+    let trackUris = []
     trackList.tracks.items.map(item => {
-      addToPlaylist(token, playlist.id, [item.uri])
+      trackUris.push(item.uri);
     })
 
+    console.log(trackUris);
+
+    addToPlaylist(token, playlist.id, trackUris)
     navigation.navigate('Playlist', {playlist: playlist.id});
   };
 

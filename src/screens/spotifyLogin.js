@@ -29,6 +29,7 @@ const SpotifyLogin = ({navigation}) => {
 
   useEffect(() => {
 
+    AsyncStorage.removeItem('accessToken');
 
     fetchAccessToken();
 
@@ -85,10 +86,10 @@ const SpotifyLogin = ({navigation}) => {
           console.error(error);
         })
         .finally(() => {
-          navigation.navigate('generatePlaylist');
+          navigation.navigate('GeneratePlaylist');
         });
     };
-
+    
     handleFetchUserData();
   }, [accessToken]);
 
