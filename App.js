@@ -1,7 +1,7 @@
-import 'react-native-gesture-handler'
+import 'react-native-gesture-handler';
 import React from 'react';
-import { Provider } from 'react-redux';
-import { store } from './src/config/store';
+import {Provider} from 'react-redux';
+import {store} from './src/config/store';
 import Routes from './src/config/routes';
 import Toast from 'react-native-toast-message';
 import Player from './src/components/Player';
@@ -10,7 +10,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <Routes />
-      <Player/>
+      <Player />
       <Toast />
     </Provider>
   );

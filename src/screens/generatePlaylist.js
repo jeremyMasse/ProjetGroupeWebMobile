@@ -66,17 +66,17 @@ const GeneratePlaylist = ({navigation}) => {
     let items = [];
     Object.entries(results.songs).map(([key, song]) => {
       searchSong(token, song)
-      .then(res => {
-        setTrackList(prevState => {
-          return {
-            ...prevState,
-            tracks: {
-              ...prevState.tracks,
-              items: [...prevState.tracks.items, ...res.tracks.items]
-            }
-          };
-        });
-      })
+        .then(res => {
+          setTrackList(prevState => {
+            return {
+              ...prevState,
+              tracks: {
+                ...prevState.tracks,
+                items: [...prevState.tracks.items, ...res.tracks.items],
+              },
+            };
+          });
+        })
         .catch(err => console.log(err))
         .finally(() => {
           setloadingTrackList(false);
@@ -153,23 +153,21 @@ const GeneratePlaylist = ({navigation}) => {
   //     console.log("test");
   //     // console.log(playlist.id);
 
-
   //     console.log("Track uris : " + trackUris);
   //     addToPlaylist(token, playlist.id, trackUris);
-      
+
   //   }
   // }, [loadingPlaylist]);
 
   const addToSpotify = async () => {
-
-    let trackUris = []
+    let trackUris = [];
     trackList.tracks.items.map(item => {
       trackUris.push(item.uri);
-    })
+    });
 
     console.log(trackUris);
 
-    addToPlaylist(token, playlist.id, trackUris)
+    addToPlaylist(token, playlist.id, trackUris);
     navigation.navigate('Playlist', {playlist: playlist.id});
   };
 
@@ -192,33 +190,35 @@ const GeneratePlaylist = ({navigation}) => {
       </StyledTouchable>
       {!loadingTrackList ? (
         <>
-        {trackList.tracks.items.map(song => (
-          <CardRow 
-          key={song.id} 
-          img={song.album.images[0].url}
-          width={50}
-          height={50}
-          title={song.name} 
-          artist={song.artists[0].name}
-          hasActions={true}
-          />
+          {trackList.tracks.items.map(song => (
+            <CardRow
+              key={song.id}
+              img={song.album.images[0].url}
+              width={50}
+              height={50}
+              title={song.name}
+              artist={song.artists[0].name}
+              hasActions={true}
+            />
           ))}
 
-
-        <StyledTouchable onPress={() => {addToSpotify()}}>
-          <StyledText>Add Playlist to Spotify</StyledText>
-        </StyledTouchable>
+          <StyledTouchable
+            onPress={() => {
+              addToSpotify();
+            }}>
+            <StyledText>Add Playlist to Spotify</StyledText>
+          </StyledTouchable>
         </>
-      ) : (<StyledText>Loading</StyledText>)
-      }
-
+      ) : (
+        <StyledText>Loading</StyledText>
+      )}
     </Container>
   );
 };
 
 const Container = styled.View`
-background: #121212;
-flex: 1;
+  background: #121212;
+  flex: 1;
 `;
 const StyledText = styled.Text`
   color: white;
@@ -231,6 +231,5 @@ const StyledTouchable = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
 `;
-
 
 export default GeneratePlaylist;

@@ -4,5 +4,5 @@ module.exports = {
   bracketSpacing: false,
   singleQuote: true,
   trailingComma: 'all',
-  endOfLine:"auto" // Regle le probleme cr
+  endOfLine: 'auto', // Regle le probleme cr
 };

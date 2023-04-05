@@ -1,22 +1,21 @@
-import { PLAYER, SAVE_TRACK } from "../actions/player";
+import {PLAYER, SAVE_TRACK} from '../actions/player';
 
 const initialState = {
   isPlaying: false,
-  track:{},
+  track: {},
 };
-
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case PLAYER:
       return {
         ...state,
-        isPlaying: action.payload
+        isPlaying: action.payload,
       };
     case SAVE_TRACK:
       return {
         ...state,
-        track: action.payload
+        track: action.payload,
       };
     default:
       return state;
