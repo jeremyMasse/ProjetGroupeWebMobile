@@ -4,6 +4,7 @@ import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import {player} from '../actions/player';
 import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Player = () => {
 
@@ -22,7 +23,13 @@ const Player = () => {
           width={50}
           height={50}
           />
-          <TrackTitle>{track.track.name}</TrackTitle>
+          <TrackView>
+            <TrackTitle>{track.track.name}</TrackTitle>
+            <TrackArtist>{track.track.artists[0].name}</TrackArtist>
+          </TrackView>
+          <PlayerButton>
+            <Icon name="play" size={25} color="#fff" />
+          </PlayerButton>
         </PlayerView>
       ) : ("")}
     </>
@@ -33,18 +40,32 @@ const Player = () => {
 const PlayerView = styled.View`
   position: absolute;
   bottom: 55px;
-  background: #121212;
+  background: #292828;
   width: 100%;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px;
 `
 
 const TrackImage = styled.Image``;
+
+const TrackView = styled.View`
+  flex-direction: column;
+  margin-left: 10px;
+`
 
 const TrackTitle = styled.Text`
   color: #fff;
 `
 
 const TrackArtist = styled.Text`
-  color: #fff;
+  color: #b2b2b2;
+  font-size: 13px;
+`
+
+const PlayerButton = styled.View`
+  margin-left: auto;
+  margin-right: 20px;
 `
 
 export default Player;

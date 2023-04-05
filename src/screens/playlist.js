@@ -50,18 +50,19 @@ const Playlist = ({route}) => {
 
     const handlePlay =  (track) => {
       console.log(track.track.uri);
-    //   axios.put(`https://api.spotify.com/v1/me/player/play`, {
-    //   headers: {
-    //     Authorization: `Bearer ${accessToken}`,
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     "uris": [`${track.track.uri}`],
-    //     "position_ms": 0,
-    //   })
-    // }).then(response => {
+      console.log(token);
+      axios.put(`https://api.spotify.com/v1/me/player/play`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "uris": [`${track.track.uri}`],
+        "position_ms": 0,
+      })
+    }).then(response => {
       
-    // }).catch(error => {console.log(error)});
+    }).catch(error => {console.log(error)});
 
     dispatch(player(true));
     dispatch(saveTrack(track));
