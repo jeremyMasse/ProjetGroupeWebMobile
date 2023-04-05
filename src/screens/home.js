@@ -16,7 +16,6 @@ const Home = () => {
     return (
         <View>
             <Text>Playlist Generator</Text>
-            
         </View>
     )
 }
