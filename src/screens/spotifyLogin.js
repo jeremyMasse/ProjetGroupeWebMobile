@@ -28,8 +28,6 @@ const SpotifyLogin = ({navigation}) => {
   };
 
   useEffect(() => {
-
-
     fetchAccessToken();
 
     const handleOpenURL = async event => {
@@ -85,7 +83,7 @@ const SpotifyLogin = ({navigation}) => {
           console.error(error);
         })
         .finally(() => {
-          navigation.navigate('generatePlaylist');
+          navigation.navigate('GeneratePlaylist');
         });
     };
 

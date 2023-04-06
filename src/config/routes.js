@@ -1,6 +1,6 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useState, useEffect } from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import Home from '../screens/home';
 import SpotifyLogin from '../screens/spotifyLogin';
@@ -19,102 +19,99 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => (
   <Tab.Navigator
-    screenOptions={({ route }) => ({
-    headerShown: false,
-    tabBarActiveTintColor: 'white',
-    tabBarInactiveTintColor: '#8e8e93',
-    tabBarStyle: {
-      height: 55,
-      paddingTop: 5,
-      paddingBottom: 5,
-      backgroundColor: 'rgba(0, 0, 0, 0.90)',
+    screenOptions={({route}) => ({
+      headerShown: false,
+      tabBarActiveTintColor: 'white',
+      tabBarInactiveTintColor: '#8e8e93',
+      tabBarStyle: {
+        height: 55,
+        paddingTop: 5,
+        paddingBottom: 5,
+        backgroundColor: 'rgba(0, 0, 0, 0.90)',
       },
-      tabBarLabelStyle:{
+      tabBarLabelStyle: {
         fontSize: 12,
       },
-      tabBarIconStyle:{
-      }
+      tabBarIconStyle: {},
+    })}>
+    <Tab.Screen
+      name="Home"
+      component={Home}
+      options={{
+        tabBarLabel: 'Home',
+        tabBarIcon: tabHome => {
+          return (
+            <Icon
+              name="home-outline"
+              size={25}
+              color={tabHome.focused ? '#fff' : '#8e8e93'}
+            />
+          );
+        },
+      }}
+    />
+    <Tab.Screen
+      name="GeneratePlaylist"
+      component={GeneratePlaylist}
+      options={{
+        tabBarLabel: 'Add Playlist',
+        tabBarIcon: tabGeneratePlaylist => {
+          return (
+            <Vinyle
+              name="record-vinyl"
+              size={24}
+              color={tabGeneratePlaylist.focused ? '#fff' : '#8e8e93'}
+            />
+          );
+        },
+      }}
+    />
+    <Tab.Screen
+      name="Library"
+      component={Library}
+      options={{
+        tabBarLabel: 'Your Library',
+        tabBarIcon: tabLibrary => {
+          return (
+            <Icon
+              name="library-outline"
+              size={24}
+              color={tabLibrary.focused ? '#fff' : '#8e8e93'}
+            />
+          );
+        },
+      }}
+    />
 
-    })}
-  >
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: (tabHome) => {
-            return (
-              <Icon
-                name="home-outline"
-                size={25}
-                color={tabHome.focused ? "#fff" : "#8e8e93"}
-              />
-            );
-          }
-        }}
-        
-      />
-      <Tab.Screen
-        name="GeneratePlaylist"
-        component={GeneratePlaylist}
-        options={{
-          tabBarLabel: 'Add Playlist',
-          tabBarIcon: (tabLibrary) => {
-            return (
-              <Vinyle
-                name="record-vinyl"
-                size={24}
-                color={tabLibrary.focused ? "#fff" : "#8e8e93"}
-              />
-            );
-          }
-        }}
-      />
-       <Tab.Screen
-        name="Library"
-        component={Library}
-        options={{
-          tabBarLabel: 'Your Library',
-          tabBarIcon: (tabLibrary) => {
-            return (
-              <Icon
-                name="library-outline"
-                size={24}
-                color={tabLibrary.focused ? "#fff" : "#8e8e93"}
-              />
-            );
-          }
-        }}
-      />
-      <Stack.Screen
+    <Tab.Screen
       name="Playlist"
       component={Playlist}
       options={{
         headerShown: false,
-        tabBarItemStyle:{
+        tabBarItemStyle: {
           display: 'none',
-        }
+        },
       }}
     />
 
-      <Tab.Screen
-        name="Spotify Login"
-        component={SpotifyLogin}
-        options={{
-          tabBarLabel: 'Spotify Login',
-          tabBarIcon: (tabLibrary) => {
-            return (
-              <Icon
-                name="person-outline"
-                size={24}
-                color={tabLibrary.focused ? "#fff" : "#8e8e93"}
-              />
-            );
-          }
-        }}
-      />
-    </Tab.Navigator>
-)
+    <Tab.Screen
+      name="Spotify Login"
+      component={SpotifyLogin}
+      options={{
+        tabBarLabel: 'Spotify Login',
+        tabBarIcon: tabAccount => {
+          return (
+            <Icon
+              name="person-outline"
+              size={24}
+              color={tabAccount.focused ? '#fff' : '#8e8e93'}
+            />
+          );
+        },
+      }}
+    />
+  </Tab.Navigator>
+);
 
 const Routes = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -133,18 +130,15 @@ const Routes = () => {
     <GlobalSafeArea>
       <NavigationContainer>
         <Stack.Navigator
-         screenOptions={{
-          headerShown: false,
+          screenOptions={{
+            headerShown: false,
           }}>
-          
-          <Stack.Screen name="TabNavigator" component={TabNavigator} options={{headerShown: false}} />
-          <Stack.Screen name="SpotifyLogin" component={SpotifyLogin} />
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Library" component={Library}/>
-          <Stack.Screen name="Playlist" component={Playlist} options={{headerShown:false}}/>
-          <Stack.Screen name="generatePlaylist" component={GeneratePlaylist} />
+          <Stack.Screen
+            name="TabNavigator"
+            component={TabNavigator}
+            options={{headerShown: false}}
+          />
         </Stack.Navigator>
-
       </NavigationContainer>
     </GlobalSafeArea>
   );
