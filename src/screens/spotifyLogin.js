@@ -8,16 +8,20 @@ import {
   requestAccessToken,
   fetchUserData,
 } from '../services/AuthSpotify.services';
+
 import {saveUser, saveToken} from '../actions/user';
+import {useTranslation} from 'react-i18next';
 
 const SpotifyLogin = ({navigation}) => {
+  const {t, i18n} = useTranslation();
+
   const authURL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
     REDIRECT_URI,
-  )}&scope=user-read-private,playlist-modify-public,user-modify-playback-state`;
+  )}&scope=user-read-private,user-read-email,playlist-modify-public,user-modify-playback-state`;
 
   const [accessToken, setAccessToken] = useState(null);
   const dispatch = useDispatch();
-  const {user} = useSelector(state => state.user.user);
+  const {user} = useSelector(state => state.user);
   const token = useSelector(state => state.user.token);
 
   const fetchAccessToken = async () => {
@@ -58,7 +62,7 @@ const SpotifyLogin = ({navigation}) => {
 
   useEffect(() => {
     const handleFetchUserData = async () => {
-      if (!accessToken && Object.keys(user).length === 0) {
+      if (!accessToken && !user.user) {
         return;
       }
       const expirationTime = await AsyncStorage.getItem(
@@ -75,7 +79,6 @@ const SpotifyLogin = ({navigation}) => {
 
       fetchUserData(accessToken)
         .then(userResponse => {
-          console.log(userResponse);
           dispatch(saveUser(userResponse));
           dispatch(saveToken(accessToken));
         })
@@ -83,7 +86,7 @@ const SpotifyLogin = ({navigation}) => {
           console.error(error);
         })
         .finally(() => {
-          navigation.navigate('GeneratePlaylist');
+          navigation.navigate('Profil');
         });
     };
 
@@ -94,7 +97,7 @@ const SpotifyLogin = ({navigation}) => {
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       {!accessToken && (
         <Button
-          title="Se connecter à Spotify"
+          title={t('loginSpotify.titleButton')}
           onPress={() => Linking.openURL(authURL)}
         />
       )}

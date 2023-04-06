@@ -10,4 +10,3 @@ export const saveTrack = payload => ({
   type: SAVE_TRACK,
   payload: payload,
 });
-

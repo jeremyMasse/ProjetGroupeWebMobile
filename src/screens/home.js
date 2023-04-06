@@ -29,7 +29,7 @@ const Home = ({navigation}) => {
   }, [isLoaded]);
   return (
     <HomeView>
-      <Text>Playlist Generator</Text>
+      <StyledText>Playlist Generator</StyledText>
     </HomeView>
   );
 };

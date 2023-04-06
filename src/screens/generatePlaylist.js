@@ -160,11 +160,11 @@ const GeneratePlaylist = ({navigation}) => {
   // }, [loadingPlaylist]);
 
   const addToSpotify = async () => {
-    let tabUri = [];
+    let trackUris = [];
     trackList.tracks.items.map(item => {
-      tabUri.push(item.uri);
+      trackUris.push(item.uri);
     });
-    addToPlaylist(token, playlist.id, tabUri).then(() => {
+    addToPlaylist(token, playlist.id, trackUris).then(() => {
       setPlaylist([]);
       setTrackList({
         tracks: {items: []},
@@ -172,7 +172,6 @@ const GeneratePlaylist = ({navigation}) => {
       setloadingPlaylist(true);
       setloadingTrackList(true);
     });
-    navigation.navigate('Playlist', {playlist: playlist.id});
   };
 
   useEffect(() => {

@@ -4,6 +4,6 @@ const theme = {
   borderWhite: '2px solid white',
   backgroundOpacity: 'rgba(0, 0, 0, 0.30)',
   borderRadius: 'border-radius: 10px', //Syntaxe ok ?
-}
+};
 
-export default theme; 
+export default theme;
