@@ -119,10 +119,9 @@ const Library = () => {
   );
 };
 
-const LibraryView = styled.View`
+const LibraryView = styled.ScrollView`
   background: #121212;
   flex: 1;
-  overflow: scroll;
 `;
 const LibraryHeader = styled.View`
   flex-direction: row;

@@ -12,6 +12,8 @@ import {
 } from '../services/AuthSpotify.services';
 import {OPENAI_API_KEY} from '@env';
 import CardRow from '../components/CardRow';
+import LottieView from 'lottie-react-native';
+import GirlListenMusic from '../assets/81966-girl-listening-to-music.json';
 
 const GeneratePlaylist = ({navigation}) => {
   const dispatch = useDispatch();
@@ -214,7 +216,10 @@ const GeneratePlaylist = ({navigation}) => {
           </StyledTouchable>
         </>
       ) : (
-        <StyledText>Loading</StyledText>
+        <LoadingContainer>
+          <LottieView source={GirlListenMusic} autoPlay loop />
+          <LoadingIndicator />
+        </LoadingContainer>
       )}
     </Container>
   );
@@ -234,6 +239,17 @@ const StyledTouchable = styled.TouchableOpacity`
   padding: 10px;
   justify-content: center;
   align-items: center;
+`;
+
+const LoadingContainer = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  background-color: #000000;
+`;
+
+const LoadingIndicator = styled.ActivityIndicator`
+  margin-top: 20px;
 `;
 
 export default GeneratePlaylist;
