@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text} from 'react-native';
+import {ActivityIndicator, Text} from 'react-native';
 
 import axios from 'axios';
 
@@ -37,7 +37,15 @@ const SpotifyProfile = () => {
     // fetchSpotifyProfile();
   }, [user]);
 
-  return <>{user && <Profile user={user} />}</>;
+  return (
+    <>
+      {Object.keys(user).length !== 0 ? (
+        <Profile user={user} />
+      ) : (
+        <ActivityIndicator size="large" color="#0000ff" />
+      )}
+    </>
+  );
 };
 
 export default SpotifyProfile;

@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, Button, Image, Pressable} from 'react-native';
 import styled from 'styled-components';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import Share from 'react-native-share';
@@ -31,7 +31,7 @@ const Library = () => {
       });
   };
 
-  useEffect(() => {
+  useFocusEffect(() => {
     AsyncStorage.getItem('accessToken')
       .then(token => {
         setAccessToken(token);
@@ -54,7 +54,7 @@ const Library = () => {
       .catch(error => {
         console.log(error);
       });
-  }, [user.id]);
+  });
 
   return (
     <LibraryView>
