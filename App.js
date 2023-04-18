@@ -7,6 +7,9 @@ import Toast from 'react-native-toast-message';
 import Player from './src/components/Player';
 import './i18n';
 import SplashScreen from 'react-native-splash-screen';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import ModalProvider from './src/context/ModalContext';
+import {BottomSheetProvider} from './src/context/ModalContext';
 
 const App = () => {
   useEffect(() => {
@@ -15,9 +18,10 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <Routes />
-      <Player />
-      <Toast />
+      <GestureHandlerRootView style={{flex: 1}}>
+        <Routes />
+        <Toast />
+      </GestureHandlerRootView>
     </Provider>
   );
 };

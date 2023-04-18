@@ -1,14 +1,9 @@
-import React, {useCallback, useRef, useMemo} from 'react';
-import {StyleSheet, View, Text, Button, Image} from 'react-native';
-import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
-import {player} from '../actions/player';
+import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Player = () => {
-  const dispatch = useDispatch();
-
   const isPlaying = useSelector(state => state.player.isPlaying);
 
   const track = useSelector(state => state.player.track);

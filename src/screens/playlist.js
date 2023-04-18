@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {
   View,
   Text,
@@ -12,14 +12,20 @@ import styled from 'styled-components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
+
+import Icon from 'react-native-vector-icons/Ionicons';
+import {ModalContext} from '../context/ModalContext';
+
+//Components
+import ActionRow from '../components/ActionRow';
+import Player from '../components/Player';
 import CardRow from '../components/CardRow';
 import Title from '../components/Title';
-import Icon from 'react-native-vector-icons/Ionicons';
-import ActionRow from '../components/ActionRow';
+
+//Redux
+import {saveModal, saveType} from '../actions/modal';
 import {useDispatch, useSelector} from 'react-redux';
-import Player from '../components/Player';
-import {player} from '../actions/player';
-import {saveTrack} from '../actions/player';
+import {player, saveTrack} from '../actions/player';
 import {
   getPlaylist,
   getPlaylistTracks,
@@ -27,59 +33,106 @@ import {
 } from '../services/Playlist.service';
 
 const Playlist = ({route}) => {
+  console.log('test');
+
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {user} = useSelector(state => state.user);
+  const {handleSnapPress} = useContext(ModalContext);
   const token = useSelector(state => state.user.token);
-  const [loadingPlaylist, setLoadingPlaylist] = useState(true);
-  const [loadingTracklist, setLoadingTracklist] = useState(true);
+
   const [playlist, setPlaylist] = useState([]);
   const [tracks, setTracks] = useState([]);
 
   const isPlaying = useSelector(state => state.player.isPlaying);
   const track = useSelector(state => state.player.track);
 
+  const handleModal = track => {
+    handleSnapPress(0);
+    dispatch(saveModal(track));
+    dispatch(saveType('track'));
+  };
+
   useEffect(() => {
     const playlist_id = route.params.playlist;
+
     getPlaylist(token, playlist_id)
-      .then(res => {
-        setPlaylist(res);
-        setLoadingPlaylist(false);
-      })
+      .then(res => setPlaylist(res))
       .catch(error => console.log(error));
 
     getPlaylistTracks(token, playlist_id)
-      .then(res => {
-        setTracks(res.items);
-        setLoadingTracklist(false);
-      })
+      .then(res => setTracks(res.items))
       .catch(error => console.log(error));
-
-    // Ajouter la variable playlist_id dans le tableau de dépendances
   }, [route.params.playlist]);
 
   const handlePlay = track => {
-    console.log(track.track.uri);
+    // Get the user's available devices
+    // axios.get('https://api.spotify.com/v1/me/player/devices', {
+    //   headers: {
+    //     Authorization: `Bearer ${token}`
+    //   }
+    // }).then(response => {
+    //   const devices = response.data.devices;
+    //   console.log(response);
+    //   // Find an active device and start playback
+    //   const activeDevice = devices.find(device => device.is_active);
+    //   if (activeDevice) {
+    //     axios.put('https://api.spotify.com/v1/me/player/play', {
+    //       uris: [`${track.track.uri}`],
+    //       position_ms: 0
+    //     }, {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //         'Content-Type': 'application/json',
+    //       }
+    //     }).then(response => {
+    //       console.log(response);
+    //     }).catch(error => {
+    //       console.log(error);
+    //     });
+    //   } else {
+    //     // Transfer playback to the first available device
+    //     const firstDevice = devices[0];
+    //     axios.put(`https://api.spotify.com/v1/me/player`, {
+    //       device_ids: [firstDevice.id],
+    //       play: true
+    //     }, {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //         'Content-Type': 'application/json',
+    //       }
+    //     }).then(response => {
+    //       console.log(response);
+    //       // Start playback after transferring device
+    //       axios.put('https://api.spotify.com/v1/me/player/play', {
+    //         uris: [`${track.track.uri}`],
+    //         position_ms: 0
+    //       }, {
+    //         headers: {
+    //           Authorization: `Bearer ${token}`,
+    //           'Content-Type': 'application/json',
+    //         }
+    //       }).then(response => {
+    //         console.log(response);
+    //       }).catch(error => {
+    //         console.log(error);
+    //       });
+    //     }).catch(error => {
+    //       console.log(error);
+    //     });
+    //   }
+    // }).catch(error => {
+    //   console.log(error.response.status);
+    //   console.log(error.response.data);
+    // });
     console.log(token);
-    axios
-      .put(`https://api.spotify.com/v1/me/player/play`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          uris: [`${track.track.uri}`],
-          position_ms: 0,
-        }),
-      })
-      .then(response => {})
-      .catch(error => {
-        console.log(error);
-      });
+    dispatch(player(true));
+    dispatch(saveTrack(track));
   };
 
-  return loadingPlaylist === false && loadingTracklist === false ? (
+  return (
     <PlaylistView>
+      <Text>Test</Text>
       <PlaylistHeader>
         <Icon
           name="arrow-back"
@@ -108,7 +161,7 @@ const Playlist = ({route}) => {
       </PlaylistHeader>
       {tracks &&
         tracks.map(track => (
-          <Touchable onPress={() => handlePlay(track)}>
+          <Touchable onPress={() => handlePlay(track)} key={track.id}>
             <CardRow
               key={track.track.id}
               title={track.track.name}
@@ -116,7 +169,8 @@ const Playlist = ({route}) => {
               img={track.track.album.images[0].url}
               width={50}
               height={50}
-              hasActions={true}>
+              hasActions={true}
+              onPress={() => handleModal(track)}>
               <ActionRow
                 title="Remove from this playlist"
                 icon="remove-circle-outline"
@@ -135,10 +189,6 @@ const Playlist = ({route}) => {
             </CardRow>
           </Touchable>
         ))}
-    </PlaylistView>
-  ) : (
-    <PlaylistView>
-      <ActivityIndicator size="large" color="#0000ff" />
     </PlaylistView>
   );
 };

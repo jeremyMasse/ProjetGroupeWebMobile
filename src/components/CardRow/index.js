@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {View, Text, Image, Modal, Pressable} from 'react-native';
 import styled from 'styled-components';
 import Icon from 'react-native-vector-icons/Entypo';
@@ -25,11 +25,12 @@ const CardRow = props => {
             name="dots-three-vertical"
             size={20}
             color="white"
-            onPress={() => setModalActions(!modalActions)}
+            onPress={props.onPress}
           />
         </CardActions>
       )}
-      {modalActions && (
+
+      {/* {modalActions && (
         <ModalActions
           title={props.title}
           img={props.img}
@@ -41,7 +42,7 @@ const CardRow = props => {
           }}>
           {props.children}
         </ModalActions>
-      )}
+      )} */}
     </CardContainer>
   );
 };

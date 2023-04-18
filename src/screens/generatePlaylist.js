@@ -174,6 +174,7 @@ const GeneratePlaylist = ({navigation}) => {
       setloadingPlaylist(true);
       setloadingTrackList(true);
     });
+
     navigation.navigate('Playlist', {playlist: playlist.id});
   };
 

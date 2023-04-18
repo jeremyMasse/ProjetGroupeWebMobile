@@ -12,9 +12,8 @@ import styled from 'styled-components/native';
 
 const SpotifyProfile = () => {
   const {user} = useSelector(state => state.user);
-
+  const token = useSelector(state => state.user.token);
   useEffect(() => {
-    console.log('userfff', user);
     // const fetchSpotifyProfile = async () => {
     //   const token = await AsyncStorage.getItem('accessToken');
     //   if (token) {

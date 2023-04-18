@@ -1,19 +1,28 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {View, Text, StyleSheet, Button, Image, Pressable} from 'react-native';
 import styled from 'styled-components';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useDispatch, useSelector} from 'react-redux';
+import {ModalContext} from '../context/ModalContext';
+
 import Share from 'react-native-share';
+
+//Redux
+import {saveModal, saveType} from '../actions/modal';
+import {useDispatch, useSelector} from 'react-redux';
+
 //Components
 import Title from '../components/Title';
 import CardRow from '../components/CardRow';
 import ActionRow from '../components/ActionRow';
+import MyModal from '../components/ModalSong';
 
 const Library = () => {
   const dispatch = useDispatch();
+  const {handleSnapPress} = useContext(ModalContext);
+  const {handleClosePress} = useContext(ModalContext);
   const {user} = useSelector(state => state.user);
   const [accessToken, setAccessToken] = useState(null);
 
@@ -29,6 +38,13 @@ const Library = () => {
       .catch(err => {
         err && console.log(err);
       });
+  };
+
+  const handleModal = playlist => {
+    handleClosePress();
+    handleSnapPress(0);
+    dispatch(saveModal(playlist));
+    dispatch(saveType('playlist'));
   };
 
   useFocusEffect(() => {
@@ -80,7 +96,26 @@ const Library = () => {
           </ImageAdd>
           <TextAdd>Generate a new playlist</TextAdd>
         </ViewAdd>
+
         {playlists &&
+          playlists.map(playlist => (
+            <Touchable
+              onPress={() =>
+                navigation.navigate('Playlist', {playlist: playlist.id})
+              }>
+              <CardRow
+                img={playlist.images[0] && playlist.images[0].url}
+                title={playlist && playlist.name}
+                width={75}
+                height={75}
+                artist={`Playlist - ${playlist.owner.display_name}`}
+                hasActions={true}
+                key={playlist.id}
+                onPress={() => handleModal(playlist)}
+              />
+            </Touchable>
+          ))}
+        {/* {playlists &&
           playlists.map(playlist => (
             <Touchable
               onPress={() =>
@@ -113,7 +148,7 @@ const Library = () => {
                 />
               </CardRow>
             </Touchable>
-          ))}
+          ))} */}
       </LibraryMain>
     </LibraryView>
   );

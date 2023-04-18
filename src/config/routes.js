@@ -5,22 +5,38 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Vinyle from 'react-native-vector-icons/FontAwesome5';
-
+import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-
+import ModalProvider from '../context/ModalContext';
 import Home from '../screens/home';
 import SpotifyLogin from '../screens/spotifyLogin';
 import Library from '../screens/library';
 import Playlist from '../screens/playlist';
 import GeneratePlaylist from '../screens/generatePlaylist';
+import PlaylistGenerator from '../screens/playlistGenerator';
+import ConfigurePlaylist from '../screens/configurePlaylist';
+import GeneratePlaylist2 from '../screens/generatePlaylist2';
 import Profil from '../screens/profil';
-
 import Player from '../components/Player';
 
 const Stack = createNativeStackNavigator();
 
 const Tab = createBottomTabNavigator();
+
+function withAuthentication(Component) {
+  function AuthenticatedComponent(props) {
+    const dispatch = useDispatch();
+    const token = useSelector(state => state.user.token);
+    if (token === null && props.route.name !== 'Login') {
+      return <SpotifyLogin />;
+    }
+
+    return <Component {...props} />;
+  }
+
+  return AuthenticatedComponent;
+}
 
 const TabNavigator = () => {
   const {t} = useTranslation();
@@ -59,18 +75,50 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="GeneratePlaylist"
-        component={GeneratePlaylist}
+        name="PlaylistGenerator"
+        component={PlaylistGenerator}
         options={{
           tabBarLabel: t('header.addPlaylist'),
-          tabBarIcon: tabGeneratePlaylist => {
+          tabBarIcon: tabPlaylistGenerator => {
             return (
               <Vinyle
                 name="record-vinyl"
                 size={24}
-                color={tabGeneratePlaylist.focused ? '#fff' : '#8e8e93'}
+                color={tabPlaylistGenerator.focused ? '#fff' : '#8e8e93'}
               />
             );
+          },
+        }}
+      />
+      <Tab.Screen
+        name="ConfigurePlaylist"
+        component={ConfigurePlaylist}
+        options={{
+          headerShown: false,
+          tabBarItemStyle: {
+            display: 'none',
+          },
+        }}
+      />
+      <Tab.Screen
+        name="GeneratePlaylist"
+        component={GeneratePlaylist}
+        options={{
+          headerShown: false,
+          tabBarItemStyle: {
+            display: 'none',
+          },
+        }}
+      />
+
+      <Tab.Screen
+        name="GeneratePlaylist2"
+        component={GeneratePlaylist2}
+        options={{
+          unmountOnBlur: true,
+          headerShown: false,
+          tabBarItemStyle: {
+            display: 'none',
           },
         }}
       />
@@ -99,23 +147,6 @@ const TabNavigator = () => {
           headerShown: false,
           tabBarItemStyle: {
             display: 'none',
-          },
-        }}
-      />
-
-      <Tab.Screen
-        name="Spotify Login"
-        component={SpotifyLogin}
-        options={{
-          tabBarLabel: t('header.spotifyLogin'),
-          tabBarIcon: tabAccount => {
-            return (
-              <Icon
-                name="person-outline"
-                size={24}
-                color={tabAccount.focused ? '#fff' : '#8e8e93'}
-              />
-            );
           },
         }}
       />
@@ -156,16 +187,24 @@ const Routes = () => {
   return (
     <GlobalSafeArea>
       <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}>
-          <Stack.Screen
-            name="TabNavigator"
-            component={TabNavigator}
-            options={{headerShown: false}}
-          />
-        </Stack.Navigator>
+        <ModalProvider>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}>
+            <Stack.Screen
+              name="TabNavigator"
+              component={withAuthentication(TabNavigator)}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="SpotifyLogin"
+              component={SpotifyLogin}
+              options={{headerShown: false}}
+            />
+          </Stack.Navigator>
+          <Player />
+        </ModalProvider>
       </NavigationContainer>
     </GlobalSafeArea>
   );
