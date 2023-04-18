@@ -1,13 +1,10 @@
-import React, {useEffect, useState, useContext} from 'react';
-import {View, Text, StyleSheet, Button, Image, Pressable} from 'react-native';
+import React, {useState, useContext} from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {ModalContext} from '../context/ModalContext';
-
-import Share from 'react-native-share';
 
 //Redux
 import {saveModal, saveType} from '../actions/modal';
@@ -16,8 +13,6 @@ import {useDispatch, useSelector} from 'react-redux';
 //Components
 import Title from '../components/Title';
 import CardRow from '../components/CardRow';
-import ActionRow from '../components/ActionRow';
-import MyModal from '../components/ModalSong';
 
 const Library = () => {
   const dispatch = useDispatch();
@@ -29,16 +24,6 @@ const Library = () => {
   const [playlists, setPlaylists] = useState([]);
 
   const navigation = useNavigation();
-
-  const sharePlaylist = async options => {
-    Share.open(options)
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        err && console.log(err);
-      });
-  };
 
   const handleModal = playlist => {
     handleClosePress();
@@ -115,40 +100,6 @@ const Library = () => {
               />
             </Touchable>
           ))}
-        {/* {playlists &&
-          playlists.map(playlist => (
-            <Touchable
-              onPress={() =>
-                navigation.navigate('Playlist', {playlist: playlist.id})
-              }>
-              <CardRow
-                img={playlist.images[0] && playlist.images[0].url}
-                title={playlist && playlist.name}
-                width={75}
-                height={75}
-                artist={`Playlist - ${playlist.owner.display_name}`}
-                hasActions={true}
-                key={playlist.id}>
-                <ActionRow
-                  title="See Playlist"
-                  icon="musical-notes-outline"
-                  onPress={() =>
-                    navigation.navigate('Playlist', {playlist: playlist.id})
-                  }
-                />
-                <ActionRow
-                  title="Share Playlist"
-                  icon="share-social-outline"
-                  onPress={() =>
-                    sharePlaylist({
-                      // title: `${playlist.owner.display_name} shared his spotify playlist with you`,
-                      url: playlist.external_urls.spotify,
-                    })
-                  }
-                />
-              </CardRow>
-            </Touchable>
-          ))} */}
       </LibraryMain>
     </LibraryView>
   );

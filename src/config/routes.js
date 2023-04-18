@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Vinyle from 'react-native-vector-icons/FontAwesome5';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import ModalProvider from '../context/ModalContext';
@@ -26,7 +26,6 @@ const Tab = createBottomTabNavigator();
 
 function withAuthentication(Component) {
   function AuthenticatedComponent(props) {
-    const dispatch = useDispatch();
     const token = useSelector(state => state.user.token);
     if (token === null && props.route.name !== 'Login') {
       return <SpotifyLogin />;

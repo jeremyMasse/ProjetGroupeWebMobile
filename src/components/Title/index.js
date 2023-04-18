@@ -1,7 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React from 'react';
 import styled from 'styled-components';
-import Icon from 'react-native-vector-icons/AntDesign';
 
 const Title = ({title}) => {
   return <TitleText>{title}</TitleText>;

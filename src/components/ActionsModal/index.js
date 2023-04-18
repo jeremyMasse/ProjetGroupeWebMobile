@@ -1,9 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Modal, Pressable} from 'react-native';
+import React from 'react';
+import {Modal} from 'react-native';
 import styled from 'styled-components';
 import CardRow from '../CardRow';
-import ActionRow from '../ActionRow';
-import Icon from 'react-native-vector-icons/Entypo';
 
 const ModalActions = props => {
   return (

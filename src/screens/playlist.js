@@ -1,13 +1,5 @@
 import React, {useEffect, useState, useContext} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  Image,
-  Pressable,
-  ActivityIndicator,
-} from 'react-native';
+import {Text} from 'react-native';
 import styled from 'styled-components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
@@ -193,7 +185,7 @@ const Playlist = ({route}) => {
   );
 };
 
-const PlaylistView = styled.View`
+const PlaylistView = styled.ScrollView`
   background: #121212;
   flex: 1;
 `;

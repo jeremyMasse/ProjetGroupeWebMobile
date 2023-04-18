@@ -1,35 +1,34 @@
-import React, {useEffect, useContext, useRef} from 'react';
-import {Text, View, Button} from 'react-native';
+import React, {useEffect, useContext} from 'react';
+import {Button} from 'react-native';
 import styled from 'styled-components';
 import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 import {ModalContext} from '../context/ModalContext';
-import MyModal from '../components/ModalSong';
 const Home = ({navigation}) => {
   const {handleSnapPress} = useContext(ModalContext);
 
-  // const {isLoaded, isClosed, load, show} = useInterstitialAd(
-  //   TestIds.INTERSTITIAL,
-  //   {
-  //     requestNonPersonalizedAdsOnly: true,
-  //   },
-  // );
-  // useEffect(() => {
-  //   // Start loading the interstitial straight away
-  //   load();
-  // }, [load]);
+  const {isLoaded, isClosed, load, show} = useInterstitialAd(
+    TestIds.INTERSTITIAL,
+    {
+      requestNonPersonalizedAdsOnly: true,
+    },
+  );
+  useEffect(() => {
+    // Start loading the interstitial straight away
+    load();
+  }, [load]);
 
-  // useEffect(() => {
-  //   if (isClosed) {
-  //     // Action after the ad is closed
-  //     navigation.navigate('Spotify Login');
-  //   }
-  // }, [isClosed, navigation]);
+  useEffect(() => {
+    if (isClosed) {
+      // Action after the ad is closed
+      navigation.navigate('Spotify Login');
+    }
+  }, [isClosed, navigation]);
 
-  // useEffect(() => {
-  //   if (isLoaded === true) {
-  //     show();
-  //   }
-  // }, [isLoaded]);
+  useEffect(() => {
+    if (isLoaded === true) {
+      show();
+    }
+  }, [isLoaded]);
   return (
     <HomeView>
       <StyledText>Playlist Generator</StyledText>

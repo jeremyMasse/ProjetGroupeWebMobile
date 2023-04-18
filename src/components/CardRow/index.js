@@ -1,12 +1,8 @@
-import React, {useEffect, useState, useContext} from 'react';
-import {View, Text, Image, Modal, Pressable} from 'react-native';
+import React from 'react';
 import styled from 'styled-components';
 import Icon from 'react-native-vector-icons/Entypo';
-import ModalActions from '../ActionsModal';
 
 const CardRow = props => {
-  const [modalActions, setModalActions] = useState(false);
-
   return (
     <CardContainer>
       <CardImage
@@ -29,25 +25,9 @@ const CardRow = props => {
           />
         </CardActions>
       )}
-
-      {/* {modalActions && (
-        <ModalActions
-          title={props.title}
-          img={props.img}
-          artist={props.artist}
-          actions={props.actions}
-          visible={modalActions}
-          handleModal={() => {
-            setModalActions(!modalActions);
-          }}>
-          {props.children}
-        </ModalActions>
-      )} */}
     </CardContainer>
   );
 };
-
-const Touchable = styled.TouchableOpacity``;
 
 const CardContainer = styled.View`
   flex-direction: row;
