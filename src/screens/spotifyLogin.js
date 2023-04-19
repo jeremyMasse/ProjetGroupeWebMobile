@@ -1,6 +1,15 @@
 import React, {useState, useEffect} from 'react';
-import {Button, View, Text, Linking} from 'react-native';
+import {Button, View, Text, Linking, Image} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
+import styled from 'styled-components/native';
+import {Animated} from 'react-native';
+import LottieView from 'lottie-react-native';
+
+import {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from 'react-native-reanimated';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CLIENT_ID, CLIENT_SECRET, REDIRECT_URI} from '@env';
@@ -12,7 +21,51 @@ import {
 import {saveUser, saveToken} from '../actions/user';
 import {useTranslation} from 'react-i18next';
 
+const Container = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  background-color: #121212;
+`;
+
+const SpotifyLogo = styled.Image`
+  width: 50px;
+  height: 50px;
+  resize-mode: contain;
+`;
+
+const Title = styled.Text`
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 70px;
+`;
+
+const StyledButton = styled.TouchableOpacity`
+  background-color: #1ed760;
+  padding: 12px 20px;
+  border-radius: 24px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ButtonText = styled.Text`
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+`;
+
 const SpotifyLogin = ({navigation}) => {
+  const [buttonPressed, setButtonPressed] = useState(false);
+
+  const scale = useSharedValue(1);
+
+  const animatedButtonStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{scale: scale.value}],
+    };
+  });
+
   const {t, i18n} = useTranslation();
 
   const authURL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
@@ -93,24 +146,46 @@ const SpotifyLogin = ({navigation}) => {
     handleFetchUserData();
   }, [accessToken]);
 
+  const handlePress = () => {
+    Linking.openURL(authURL);
+  };
+
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    <Container>
+      <Title>{t('loginSpotify.title')}</Title>
       {!accessToken && (
-        <Button
-          title={t('loginSpotify.titleButton')}
-          onPress={() => Linking.openURL(authURL)}
-        />
+        <Animated.View style={animatedButtonStyle}>
+          <StyledButton
+            onPressIn={() => {
+              setButtonPressed(true);
+              scale.value = withTiming(0.9, {duration: 100});
+            }}
+            onPressOut={() => {
+              setButtonPressed(false);
+              scale.value = withTiming(1, {duration: 100});
+            }}
+            onPress={() => handlePress}>
+            <SpotifyLogo source={require('../assets/logo_spotify.png')} />
+            <ButtonText>{t('loginSpotify.titleButton')}</ButtonText>
+          </StyledButton>
+        </Animated.View>
       )}
-      {accessToken && (
+      <LottieView
+        source={require('../assets/music-bar.json')}
+        autoPlay
+        loop
+        style={{width: 100, height: 100}}
+      />
+      {/* {accessToken && (
         <>
           {user && (
-            <Text style={{color: 'black'}}>
+            <ConnectedText>
               Connecté en tant que : {user.display_name} ({user.email})
-            </Text>
+            </ConnectedText>
           )}
         </>
-      )}
-    </View>
+      )} */}
+    </Container>
   );
 };
 
