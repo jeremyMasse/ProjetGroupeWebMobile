@@ -7,10 +7,12 @@ import Toast from 'react-native-toast-message';
 import './i18n';
 import SplashScreen from 'react-native-splash-screen';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import TrackPlayer from 'react-native-track-player';
 
 const App = () => {
   useEffect(() => {
     SplashScreen.hide(); //hides the splash screen on app load.
+    TrackPlayer.setupPlayer();
   }, []);
 
   return (
