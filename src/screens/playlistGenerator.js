@@ -15,6 +15,7 @@ import GirlListenMusic from '../assets/81966-girl-listening-to-music.json';
 import {handlePlay} from '../services/Player.service';
 import {player, saveTrack} from '../actions/player';
 import {err} from 'react-native-svg/lib/typescript/xml';
+import notifee from '@notifee/react-native';
 
 const Home = ({route, navigation}) => {
   const token = useSelector(state => state.user.token?.access_token);
@@ -155,6 +156,27 @@ const Home = ({route, navigation}) => {
     });
   };
 
+  async function onDisplayNotification(body) {
+    // Create a channel (required for Android)
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
+
+    // Display a notification
+    await notifee.displayNotification({
+      title: 'New playlist has been add in your spotify library',
+      body: body,
+
+      android: {
+        channelId,
+        pressAction: {
+          id: 'default',
+        },
+      },
+    });
+  }
+
   return (
     <HomeView>
       <LibraryHeader>
@@ -198,6 +220,9 @@ const Home = ({route, navigation}) => {
           <StyledTouchable
             onPress={() => {
               addToSpotify();
+              onDisplayNotification(playlistName)
+                .then(() => console.log('generate notif'))
+                .catch(err => console.log(err));
             }}>
             <StyledText>Add Playlist to Spotify</StyledText>
           </StyledTouchable>
