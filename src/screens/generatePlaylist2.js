@@ -19,7 +19,7 @@ const Home = ({route, navigation}) => {
   const token = useSelector(state => state.user.token);
   const {user} = useSelector(state => state.user);
   const dispatch = useDispatch();
-  // console.log(token);
+
   const [playlistName, setPlaylistName] = useState('Playlist name');
 
   const handleNameChange = text => {

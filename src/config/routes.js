@@ -1,7 +1,6 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React, {useState, useEffect} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Vinyle from 'react-native-vector-icons/FontAwesome5';
@@ -9,7 +8,6 @@ import {useSelector} from 'react-redux';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import ModalProvider from '../context/ModalContext';
-import Home from '../screens/home';
 import SpotifyLogin from '../screens/spotifyLogin';
 import Library from '../screens/library';
 import Playlist from '../screens/playlist';
@@ -57,22 +55,6 @@ const TabNavigator = () => {
         },
         tabBarIconStyle: {},
       })}>
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: tabHome => {
-            return (
-              <Icon
-                name="home-outline"
-                size={25}
-                color={tabHome.focused ? '#fff' : '#8e8e93'}
-              />
-            );
-          },
-        }}
-      />
       <Tab.Screen
         name="PlaylistGenerator"
         component={PlaylistGenerator}

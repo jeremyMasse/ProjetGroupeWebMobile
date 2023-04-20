@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {ActivityIndicator, Text, View, Image} from 'react-native';
 
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import Profile from '../components/ProfilUser';
 import LottieView from 'lottie-react-native';
@@ -10,7 +10,6 @@ import styled from 'styled-components/native';
 
 const SpotifyProfile = () => {
   const {user} = useSelector(state => state.user);
-  const token = useSelector(state => state.user.token);
 
   return (
     <>

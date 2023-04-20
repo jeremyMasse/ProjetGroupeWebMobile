@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {Button, View, Text, Linking, Image} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components/native';
+import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
+import {useNavigation} from '@react-navigation/native';
 
 import LottieView from 'lottie-react-native';
 
@@ -55,28 +57,43 @@ const ButtonText = styled.Text`
   color: white;
 `;
 
-const SpotifyLogin = ({navigation}) => {
-  const {t, i18n} = useTranslation();
+const SpotifyLogin = () => {
+  const {t} = useTranslation();
+  const navigation = useNavigation();
 
   const authURL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
     REDIRECT_URI,
   )}&scope=user-read-private,user-read-email,playlist-modify-public,user-modify-playback-state,user-read-playback-state,user-library-read,user-library-modify`;
 
-  // const [accessToken, setAccessToken] = useState(null);
   const dispatch = useDispatch();
-  const {user} = useSelector(state => state.user);
   const token = useSelector(state => state.user.token);
+  const [access_token, setAccessToken] = useState(null);
 
-  // const fetchAccessToken = async () => {
-  //   // const storedAccessToken = await AsyncStorage.getItem('accessToken');
-  //   if (token) {
-  //     setAccessToken(token);
-  //   }
-  // };
+  // Partie sur la pub
+  const {isLoaded, load, show} = useInterstitialAd(TestIds.INTERSTITIAL, {
+    requestNonPersonalizedAdsOnly: true,
+  });
 
   useEffect(() => {
-    // fetchAccessToken();
+    // Start loading the interstitial straight away
+    load();
+  }, [load]);
 
+  // useEffect(() => {
+  //   if (isClosed) {
+  //     // Action after the ad is closed
+  //     // navigation.navigate('SpotifyLogin');
+  //   }
+  // }, [isClosed, navigation]);
+
+  useEffect(() => {
+    if (isLoaded === true) {
+      show();
+    }
+  }, [isLoaded]);
+
+  //
+  useEffect(() => {
     const handleOpenURL = async event => {
       const code = event.url.split('code=')[1];
       if (code) {
@@ -89,19 +106,16 @@ const SpotifyLogin = ({navigation}) => {
 
         if (access_token && expires_in) {
           const expirationTime = new Date().getTime() + expires_in * 1000;
-          // await AsyncStorage.setItem(
-          //   'accessTokenExpiration',
-          //   expirationTime.toString(),
-          // );
-
-          // setAccessToken(access_token);
+          setAccessToken({
+            access_token,
+            expirationTime,
+          });
           dispatch(
             saveToken({
               access_token,
               expirationTime,
             }),
           );
-          // await AsyncStorage.setItem('accessToken', access_token);
         }
       }
     };
@@ -110,38 +124,20 @@ const SpotifyLogin = ({navigation}) => {
 
   useEffect(() => {
     const handleFetchUserData = async () => {
-      if (!token && !user.user) {
-        return;
+      if (access_token) {
+        fetchUserData(access_token.access_token)
+          .then(userResponse => {
+            dispatch(saveUser(userResponse));
+            navigation.navigate('Profil');
+          })
+          .catch(error => {
+            console.error(error);
+          });
       }
-      // const expirationTime = await AsyncStorage.getItem(
-      //   'accessTokenExpiration',
-      // );
-
-      if (new Date().getTime() > parseInt(token.expirationTime, 10)) {
-        console.log('teeest');
-        // Supprimer le jeton d'accès et demander à l'utilisateur de se reconnecter
-        // await AsyncStorage.removeItem('accessToken');
-        // await AsyncStorage.removeItem('accessTokenExpiration');
-        dispatch(saveToken(null));
-        // setAccessToken(null);
-        return;
-      }
-
-      fetchUserData(token.access_token)
-        .then(userResponse => {
-          dispatch(saveUser(userResponse));
-          // dispatch(saveToken(token));
-        })
-        .catch(error => {
-          console.error(error);
-        })
-        .finally(() => {
-          navigation.navigate('Profil');
-        });
     };
 
     handleFetchUserData();
-  }, [token]);
+  }, [access_token]);
 
   return (
     <Container>
