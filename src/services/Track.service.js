@@ -3,7 +3,6 @@ import Toast from 'react-native-toast-message';
 import TrackPlayer from 'react-native-track-player';
 
 export const addToFavorites = async (trackId, token) => {
-  console.log('tyre');
   await axios
     .put(`https://api.spotify.com/v1/me/tracks?ids=${trackId}`, null, {
       headers: {
@@ -41,4 +40,20 @@ export const removeFromFavorites = async (trackId, token) => {
     .catch(error => {
       console.log(error);
     });
+};
+
+export const getFavorites = async token => {
+  try {
+    const response = await axios.get('https://api.spotify.com/v1/me/tracks', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const trackItems = response.data.items;
+
+    return trackItems;
+  } catch (error) {
+    console.error(error);
+  }
 };

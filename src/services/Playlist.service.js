@@ -44,10 +44,10 @@ export const deleteTrackFromPlaylist = (
   track_uri,
   track_name,
   playlist_name,
-  setTracks,
+  // setTracks,
 ) => {
   const headers = {Authorization: `Bearer ${access_token}`};
-  axios({
+  const res = axios({
     method: 'delete',
     url: `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`,
     headers,
@@ -65,16 +65,14 @@ export const deleteTrackFromPlaylist = (
         text1: `${track_name}`,
         text2: `has been removed from ${playlist_name}`,
       });
-
-      // Update Tracks avec suppression de la track
-      setTracks(prevTracks =>
-        prevTracks.filter(track => track.track.uri !== track_uri),
-      );
     })
     .catch(error => {
+      console.log(error);
       Toast.show({
         type: 'error',
         text1: 'An error occured',
       });
     });
+
+  return res.data;
 };

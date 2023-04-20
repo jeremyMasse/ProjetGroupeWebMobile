@@ -41,8 +41,8 @@ const Playlist = ({route}) => {
   const isPlaying = useSelector(state => state.player.isPlaying);
   const track = useSelector(state => state.player.track);
 
-  const handleModal = track => {
-    handleSnapPress(0);
+  const handleModal = async (track, playlist) => {
+    await handleSnapPress(0, playlist);
     dispatch(saveModal(track));
     dispatch(saveType('track'));
   };
@@ -58,95 +58,6 @@ const Playlist = ({route}) => {
       .then(res => setTracks(res.items))
       .catch(error => console.log(error));
   }, [route.params.playlist]);
-
-  // const handlePlay = async track => {
-  // Get the user's available devices
-
-  // axios
-  //   .get('https://api.spotify.com/v1/me/player/devices', {
-  //     headers: {
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   })
-  //   .then(response => {
-  //     const devices = response.data.devices;
-  //     // console.log(response.data.devices);
-  //     // Find an active device and start playback
-  //     const activeDevice = devices.find(device => device.is_active);
-  //     if (activeDevice) {
-  //       axios
-  //         .put(
-  //           'https://api.spotify.com/v1/me/player/play',
-  //           {
-  //             uris: [`${track.track.uri}`],
-  //             position_ms: 0,
-  //           },
-  //           {
-  //             headers: {
-  //               Authorization: `Bearer ${token}`,
-  //               'Content-Type': 'application/json',
-  //             },
-  //           },
-  //         )
-  //         .then(response => {
-  //           // console.log(response);
-  //         })
-  //         .catch(error => {
-  //           console.log(error);
-  //         });
-  //     } else {
-  //       // Transfer playback to the first available device
-  //       const firstDevice = devices[0];
-  //       axios
-  //         .put(
-  //           'https://api.spotify.com/v1/me/player',
-  //           {
-  //             device_ids: [firstDevice.id],
-  //             play: true,
-  //           },
-  //           {
-  //             headers: {
-  //               Authorization: `Bearer ${token}`,
-  //               'Content-Type': 'application/json',
-  //             },
-  //           },
-  //         )
-  //         .then(response => {
-  //           // Start playback after transferring device
-  //           axios
-  //             .put(
-  //               'https://api.spotify.com/v1/me/player/play',
-  //               {
-  //                 uris: [`${track.track.uri}`],
-  //                 position_ms: 0,
-  //               },
-  //               {
-  //                 headers: {
-  //                   Authorization: `Bearer ${token}`,
-  //                   'Content-Type': 'application/json',
-  //                 },
-  //               },
-  //             )
-  //             .then(response => {
-  //               // console.log(response.data);
-  //             })
-  //             .catch(error => {
-  //               console.log(error);
-  //             });
-  //         })
-  //         .catch(error => {
-  //           console.log(error);
-  //         });
-  //     }
-  //   })
-  //   .catch(error => {
-  //     // console.log(error.response.status);
-  //     // console.log(error.response.data);
-  //   });
-  //   console.log(token);
-  //   dispatch(player(true));
-  //   dispatch(saveTrack(track));
-  // };
 
   return (
     <PlaylistView>
@@ -193,26 +104,8 @@ const Playlist = ({route}) => {
               width={50}
               height={50}
               hasActions={true}
-              onPress={() => handleModal(track)}>
-              <ActionRow
-                title={t('playlist.removeMusic')}
-                icon="remove-circle-outline"
-                onPress={() =>
-                  deleteTrackFromPlaylist(
-                    token.access_token,
-                    playlist.id,
-                    track.track.uri,
-                    track.track.name,
-                    playlist.name,
-                    setTracks,
-                  )
-                }
-              />
-              <ActionRow
-                title={t('playlist.share')}
-                icon="share-social-outline"
-              />
-            </CardRow>
+              onPress={() => handleModal(track)}
+            />
           </Touchable>
         ))}
     </PlaylistView>
@@ -224,7 +117,9 @@ const PlaylistView = styled.ScrollView`
   flex: 1;
 `;
 
-const PlaylistHeader = styled.View``;
+const PlaylistHeader = styled.View`
+  margin: 5px;
+`;
 
 const Owner = styled.View`
   flex-direction: row;

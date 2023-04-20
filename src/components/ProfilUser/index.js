@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
-import {View, Image, Text, Switch} from 'react-native';
+import {View, Image, Text, Switch, Touchable} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {useTranslation} from 'react-i18next';
 import {useSelector, useDispatch} from 'react-redux';
@@ -9,6 +9,7 @@ import {Dimensions} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {logout} from '../../actions/user';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
 const Profil = ({user}) => {
   const {country, display_name, email, images, followers, product} = user;
@@ -17,6 +18,7 @@ const Profil = ({user}) => {
   const isDarkMode = useSelector(state => state.theme.isDarkMode);
   const theme = useSelector(state => state.theme.theme);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const handleLogout = () => {
     dispatch(logout());
@@ -75,18 +77,18 @@ const Profil = ({user}) => {
             value={isDarkMode}
           />
         </Onglet>
-        <Onglet>
+        <Button onPress={() => navigation.navigate('Favorites')}>
           <Title>
             <FontAwesome name="heart" size={24} color={theme.text} />
             <TitleText>{t('profil.favorites')}</TitleText>
           </Title>
-        </Onglet>
-        <DisconnectButton onPress={handleLogout}>
+        </Button>
+        <Button onPress={handleLogout}>
           <Title>
             <FontAwesome name="sign-out" size={24} color={theme.text} />
             <TitleText>{t('profil.disconnect')}</TitleText>
           </Title>
-        </DisconnectButton>
+        </Button>
       </PreferencesContainer>
     </ProfileContainer>
   );
@@ -165,7 +167,7 @@ const Onglet = styled.View`
   height: 50px;
 `;
 
-const DisconnectButton = styled.TouchableOpacity`
+const Button = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;

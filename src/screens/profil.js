@@ -1,7 +1,5 @@
 import {ActivityIndicator, Text, View, Image} from 'react-native';
-
-import {useSelector} from 'react-redux';
-
+import {useDispatch, useSelector} from 'react-redux';
 import Profile from '../components/ProfilUser';
 import LottieView from 'lottie-react-native';
 import GirlListenMusic from '../assets/81966-girl-listening-to-music.json';
@@ -9,7 +7,6 @@ import styled from 'styled-components/native';
 
 const SpotifyProfile = () => {
   const {user} = useSelector(state => state.user);
-
   return (
     <>
       {Object.keys(user).length !== 0 ? (
