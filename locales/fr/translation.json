@@ -8,7 +8,13 @@
     "home": "Accueil"
   },
   "profil": {
-    "title": "Page de profil"
+    "language": "Langage",
+    "darkMode": "Mode sombre",
+    "country": "Pays",
+    "followers": "Followers",
+    "subscription": "Abonnement Spotify",
+    "english": "Anglais",
+    "french": "Français"
   },
   "loginSpotify": {
     "title": "Awesome",

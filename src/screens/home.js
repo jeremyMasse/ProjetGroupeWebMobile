@@ -20,7 +20,7 @@ const Home = ({navigation}) => {
   useEffect(() => {
     if (isClosed) {
       // Action after the ad is closed
-      navigation.navigate('Spotify Login');
+      navigation.navigate('SpotifyLogin');
     }
   }, [isClosed, navigation]);
 

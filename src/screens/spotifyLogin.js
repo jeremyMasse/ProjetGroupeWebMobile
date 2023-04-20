@@ -2,14 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {Button, View, Text, Linking, Image} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components/native';
-import {Animated} from 'react-native';
-import LottieView from 'lottie-react-native';
 
-import {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-} from 'react-native-reanimated';
+import LottieView from 'lottie-react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CLIENT_ID, CLIENT_SECRET, REDIRECT_URI} from '@env';
@@ -49,6 +43,12 @@ const StyledButton = styled.TouchableOpacity`
   justify-content: center;
 `;
 
+const ButtonContent = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+
 const ButtonText = styled.Text`
   font-size: 16px;
   font-weight: bold;
@@ -56,16 +56,6 @@ const ButtonText = styled.Text`
 `;
 
 const SpotifyLogin = ({navigation}) => {
-  const [buttonPressed, setButtonPressed] = useState(false);
-
-  const scale = useSharedValue(1);
-
-  const animatedButtonStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{scale: scale.value}],
-    };
-  });
-
   const {t, i18n} = useTranslation();
 
   const authURL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
@@ -146,35 +136,22 @@ const SpotifyLogin = ({navigation}) => {
     handleFetchUserData();
   }, [accessToken]);
 
-  const handlePress = () => {
-    Linking.openURL(authURL);
-  };
-
   return (
     <Container>
       <Title>{t('loginSpotify.title')}</Title>
       {!accessToken && (
-        <Animated.View style={animatedButtonStyle}>
-          <StyledButton
-            onPressIn={() => {
-              setButtonPressed(true);
-              scale.value = withTiming(0.9, {duration: 100});
-            }}
-            onPressOut={() => {
-              setButtonPressed(false);
-              scale.value = withTiming(1, {duration: 100});
-            }}
-            onPress={() => handlePress}>
+        <StyledButton onPress={() => Linking.openURL(authURL)}>
+          <ButtonContent>
             <SpotifyLogo source={require('../assets/logo_spotify.png')} />
             <ButtonText>{t('loginSpotify.titleButton')}</ButtonText>
-          </StyledButton>
-        </Animated.View>
+          </ButtonContent>
+        </StyledButton>
       )}
       <LottieView
         source={require('../assets/music-bar.json')}
         autoPlay
         loop
-        style={{width: 100, height: 100}}
+        style={{width: 100, height: 100, marginTop: 50}}
       />
       {/* {accessToken && (
         <>
