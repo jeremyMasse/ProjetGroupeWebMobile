@@ -21,5 +21,21 @@
   "loginSpotify": {
     "title": "Awesome",
     "titleButton": "Se connecter à Spotify"
+  },
+  "playlist": {
+    "removeMusic": "Supprimer de la playlist",
+    "see": "Voir la playlist",
+    "sharePlaylist": "Partager la playlist",
+    "share": "Partager la musique"
+  },
+  "library": {
+    "title": "Votre Bibliothèque",
+    "addPlaylist": "Générer une nouvelle playlist"
+  },
+  "generator": {
+    "playlistBpm": "Trouves une nouvelle playlist en fonction de ton bpm",
+    "playlistDriving": "Trouves une nouvelle playlist pour conduire",
+    "playlistWeather": "Trouves une nouvelle playlist en fonction de la météo",
+    "playlistMood": "Trouves une nouvelle playlist basé sur ton humeur"
   }
 }

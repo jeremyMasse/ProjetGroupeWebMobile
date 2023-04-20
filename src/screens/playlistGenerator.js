@@ -4,9 +4,11 @@ import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import Title from '../components/Title';
 import CardGrid from '../components/CardGrid';
+import {useTranslation} from 'react-i18next';
 
 const PlaylistGenerator = () => {
   const navigation = useNavigation();
+  const {t} = useTranslation();
 
   const {user} = useSelector(state => state.user);
   return (
@@ -21,32 +23,32 @@ const PlaylistGenerator = () => {
           />
         )}
 
-        <Title title="Generate a new playlist" />
+        <Title title={t('library.addPlaylist')} />
       </LibraryHeader>
 
       <GridView>
         <CardGrid
-          title="Find a new playlist that matches your bpm "
+          title={t('generator.playlistBpm')}
           img="https://i.pinimg.com/564x/30/a4/02/30a402aa2d756f11d250b90bd11bf1d4.jpg"
           onPress={() =>
             navigation.navigate('ConfigurePlaylist', {option: 'bpm'})
           }
         />
         <CardGrid
-          title="Find a new playlist a new playlist for you driving"
+          title={t('generator.playlistDriving')}
           img="https://i.pinimg.com/564x/a5/f1/78/a5f17886697760a0b591ee396d2ce317.jpg"
           onPress={() =>
             navigation.navigate('ConfigurePlaylist', {option: 'driving'})
           }
         />
         <CardGrid
-          title="Find a new playlist a new playlist that matches your mood"
+          title={t('generator.playlistWeather')}
           onPress={() =>
             navigation.navigate('ConfigurePlaylist', {option: 'weather'})
           }
         />
         <CardGrid
-          title="Based on your mood"
+          title={t('generator.playlistMood')}
           onPress={() =>
             navigation.navigate('ConfigurePlaylist', {option: 'mood'})
           }

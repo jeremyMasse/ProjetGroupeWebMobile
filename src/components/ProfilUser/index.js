@@ -94,7 +94,10 @@ const Profil = ({user}) => {
 
 const ProfileContainer = styled.View`
   flex: 1;
-  background: ${({theme}) => theme.theme.background};
+  background: ${({theme}) => {
+    console.log(theme);
+    return theme.theme.background;
+  }};
   align-items: center;
   padding: 20px;
 `;

@@ -7,6 +7,8 @@ import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {ModalContext} from '../context/ModalContext';
 import TrackPlayer from 'react-native-track-player';
+import {useTranslation} from 'react-i18next';
+
 //Components
 import ActionRow from '../components/ActionRow';
 import Player from '../components/Player';
@@ -17,6 +19,7 @@ import Title from '../components/Title';
 import {saveModal, saveType} from '../actions/modal';
 import {useDispatch, useSelector} from 'react-redux';
 import {player, saveTrack} from '../actions/player';
+
 import {
   getPlaylist,
   getPlaylistTracks,
@@ -25,9 +28,8 @@ import {
 import {handlePlay} from '../services/Player.service';
 
 const Playlist = ({route}) => {
-  console.log('test');
-
   const navigation = useNavigation();
+  const {t} = useTranslation();
   const dispatch = useDispatch();
   const {user} = useSelector(state => state.user);
   const {handleSnapPress} = useContext(ModalContext);
@@ -193,7 +195,7 @@ const Playlist = ({route}) => {
               hasActions={true}
               onPress={() => handleModal(track)}>
               <ActionRow
-                title="Remove from this playlist"
+                title={t('playlist.removeMusic')}
                 icon="remove-circle-outline"
                 onPress={() =>
                   deleteTrackFromPlaylist(
@@ -206,7 +208,10 @@ const Playlist = ({route}) => {
                   )
                 }
               />
-              <ActionRow title="Share" icon="share-social-outline" />
+              <ActionRow
+                title={t('playlist.share')}
+                icon="share-social-outline"
+              />
             </CardRow>
           </Touchable>
         ))}

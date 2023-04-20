@@ -127,7 +127,6 @@ const SpotifyLogin = ({navigation}) => {
         return;
       }
 
-      console.log('accessToken', token);
       fetchUserData(token.access_token)
         .then(userResponse => {
           dispatch(saveUser(userResponse));

@@ -8,8 +8,12 @@ import './i18n';
 import SplashScreen from 'react-native-splash-screen';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import TrackPlayer from 'react-native-track-player';
+// import ThemeProvider from './src/components/ThemeProvider';
+import ThemeProviderWrapper from './src/components/ThemeProviderWrapper';
 
 const App = () => {
+  // const theme = useSelector(state => state.theme.theme);
+
   useEffect(() => {
     SplashScreen.hide(); //hides the splash screen on app load.
     TrackPlayer.setupPlayer();
@@ -17,10 +21,12 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <GestureHandlerRootView style={{flex: 1}}>
-        <Routes />
-        <Toast />
-      </GestureHandlerRootView>
+      <ThemeProviderWrapper>
+        <GestureHandlerRootView style={{flex: 1}}>
+          <Routes />
+          <Toast />
+        </GestureHandlerRootView>
+      </ThemeProviderWrapper>
     </Provider>
   );
 };

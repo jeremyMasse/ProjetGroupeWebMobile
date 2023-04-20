@@ -7,14 +7,17 @@ import {useNavigation} from '@react-navigation/native';
 import ActionRow from '../components/ActionRow';
 import Share from 'react-native-share';
 import {deleteTrackFromPlaylist} from '../services/Playlist.service';
+import {useTranslation} from 'react-i18next';
+
 export const ModalContext = createContext(null);
 
 const ModalProvider = props => {
+  const navigation = useNavigation();
+  const {t} = useTranslation();
   const dispatch = useDispatch();
   const token = useSelector(state => state.user.token);
   const {modal} = useSelector(state => state.modal);
   const type = useSelector(state => state.modal.type);
-  const navigation = useNavigation();
 
   // hooks
   const sheetRef = useRef(null);
@@ -77,7 +80,7 @@ const ModalProvider = props => {
               artist={modal.owner && modal.owner.display_name}
             />
             <ActionRow
-              title="See Playlist"
+              title={t('playlist.see')}
               icon="musical-notes-outline"
               onPress={() => {
                 navigation.navigate('Playlist', {playlist: modal.id});
@@ -85,7 +88,7 @@ const ModalProvider = props => {
               }}
             />
             <ActionRow
-              title="Share Playlist"
+              title={t('playlist.sharePlaylist')}
               icon="share-social-outline"
               onPress={() => {
                 sharePlaylist({
@@ -108,7 +111,7 @@ const ModalProvider = props => {
               artist={modal.track?.artists?.map(artist => `${artist.name}, `)}
             />
             <ActionRow
-              title="Remove from this playlist"
+              title={t('playlist.removeMusic')}
               icon="remove-circle-outline"
               onPress={() =>
                 deleteTrackFromPlaylist(
@@ -121,7 +124,10 @@ const ModalProvider = props => {
                 )
               }
             />
-            <ActionRow title="Share" icon="share-social-outline" />
+            <ActionRow
+              title={t('playlist.share')}
+              icon="share-social-outline"
+            />
           </>
         )}
       </BottomSheet>

@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {ModalContext} from '../context/ModalContext';
+import {useTranslation} from 'react-i18next';
 
 //Redux
 import {saveModal, saveType} from '../actions/modal';
@@ -15,6 +16,7 @@ import Title from '../components/Title';
 import CardRow from '../components/CardRow';
 
 const Library = () => {
+  const {t} = useTranslation();
   const dispatch = useDispatch();
   const {handleSnapPress} = useContext(ModalContext);
   const {handleClosePress} = useContext(ModalContext);
@@ -64,7 +66,7 @@ const Library = () => {
           />
         )}
 
-        <Title title="Your Library" />
+        <Title title={t('library.title')} />
         <AddIcon>
           <Icon name="add" color="white" size={35} />
         </AddIcon>
@@ -74,12 +76,13 @@ const Library = () => {
           <ImageAdd>
             <Icon name="add" size={75} color="#b2b2b2" />
           </ImageAdd>
-          <TextAdd>Generate a new playlist</TextAdd>
+          <TextAdd>{t('library.addPlaylist')}</TextAdd>
         </ViewAdd>
 
         {playlists &&
           playlists.map(playlist => (
             <Touchable
+              key={playlist.id}
               onPress={() =>
                 navigation.navigate('Playlist', {playlist: playlist.id})
               }>
