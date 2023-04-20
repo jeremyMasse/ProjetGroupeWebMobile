@@ -19,7 +19,7 @@ const Library = () => {
   const {handleSnapPress} = useContext(ModalContext);
   const {handleClosePress} = useContext(ModalContext);
   const {user} = useSelector(state => state.user);
-  const [accessToken, setAccessToken] = useState(null);
+  const token = useSelector(state => state.user.token);
 
   const [playlists, setPlaylists] = useState([]);
 
@@ -33,28 +33,23 @@ const Library = () => {
   };
 
   useFocusEffect(() => {
-    AsyncStorage.getItem('accessToken')
-      .then(token => {
-        setAccessToken(token);
-        axios
-          .get(`https://api.spotify.com/v1/users/${user.id}/playlists`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            params: {
-              limit: 10,
-              offset: 0,
-              market: 'US',
-            },
-          })
-          .then(playlist => {
-            setPlaylists(playlist.data.items);
-          })
-          .catch(error => console.log(error.response));
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    if (token) {
+      axios
+        .get(`https://api.spotify.com/v1/users/${user.id}/playlists`, {
+          headers: {
+            Authorization: `Bearer ${token.access_token}`,
+          },
+          params: {
+            limit: 10,
+            offset: 0,
+            market: 'US',
+          },
+        })
+        .then(playlist => {
+          setPlaylists(playlist.data.items);
+        })
+        .catch(error => console.log(error.response));
+    }
   });
 
   return (

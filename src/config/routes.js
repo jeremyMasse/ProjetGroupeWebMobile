@@ -171,18 +171,6 @@ const TabNavigator = () => {
 };
 
 const Routes = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    AsyncStorage.getItem('accessToken')
-      .then(token => {
-        setIsLoggedIn(!!token);
-      })
-      .catch(err => {
-        // console.log('🚀 ~ file: routes.js:6 ~ Routes ~ err', err);
-      });
-  }, []);
-
   return (
     <GlobalSafeArea>
       <NavigationContainer>

@@ -62,20 +62,20 @@ const SpotifyLogin = ({navigation}) => {
     REDIRECT_URI,
   )}&scope=user-read-private,user-read-email,playlist-modify-public,user-modify-playback-state,user-read-playback-state,user-library-read,user-library-modify`;
 
-  const [accessToken, setAccessToken] = useState(null);
+  // const [accessToken, setAccessToken] = useState(null);
   const dispatch = useDispatch();
   const {user} = useSelector(state => state.user);
   const token = useSelector(state => state.user.token);
 
-  const fetchAccessToken = async () => {
-    const storedAccessToken = await AsyncStorage.getItem('accessToken');
-    if (storedAccessToken) {
-      setAccessToken(storedAccessToken);
-    }
-  };
+  // const fetchAccessToken = async () => {
+  //   // const storedAccessToken = await AsyncStorage.getItem('accessToken');
+  //   if (token) {
+  //     setAccessToken(token);
+  //   }
+  // };
 
   useEffect(() => {
-    fetchAccessToken();
+    // fetchAccessToken();
 
     const handleOpenURL = async event => {
       const code = event.url.split('code=')[1];
@@ -89,14 +89,19 @@ const SpotifyLogin = ({navigation}) => {
 
         if (access_token && expires_in) {
           const expirationTime = new Date().getTime() + expires_in * 1000;
-          await AsyncStorage.setItem(
-            'accessTokenExpiration',
-            expirationTime.toString(),
-          );
+          // await AsyncStorage.setItem(
+          //   'accessTokenExpiration',
+          //   expirationTime.toString(),
+          // );
 
-          setAccessToken(access_token);
-          dispatch(saveToken(access_token));
-          await AsyncStorage.setItem('accessToken', access_token);
+          // setAccessToken(access_token);
+          dispatch(
+            saveToken({
+              access_token,
+              expirationTime,
+            }),
+          );
+          // await AsyncStorage.setItem('accessToken', access_token);
         }
       }
     };
@@ -105,25 +110,28 @@ const SpotifyLogin = ({navigation}) => {
 
   useEffect(() => {
     const handleFetchUserData = async () => {
-      if (!accessToken && !user.user) {
+      if (!token && !user.user) {
         return;
       }
-      const expirationTime = await AsyncStorage.getItem(
-        'accessTokenExpiration',
-      );
+      // const expirationTime = await AsyncStorage.getItem(
+      //   'accessTokenExpiration',
+      // );
 
-      if (new Date().getTime() > parseInt(expirationTime, 10)) {
+      if (new Date().getTime() > parseInt(token.expirationTime, 10)) {
+        console.log('teeest');
         // Supprimer le jeton d'accès et demander à l'utilisateur de se reconnecter
-        await AsyncStorage.removeItem('accessToken');
-        await AsyncStorage.removeItem('accessTokenExpiration');
-        setAccessToken(null);
+        // await AsyncStorage.removeItem('accessToken');
+        // await AsyncStorage.removeItem('accessTokenExpiration');
+        dispatch(saveToken(null));
+        // setAccessToken(null);
         return;
       }
 
-      fetchUserData(accessToken)
+      console.log('accessToken', token);
+      fetchUserData(token.access_token)
         .then(userResponse => {
           dispatch(saveUser(userResponse));
-          dispatch(saveToken(accessToken));
+          // dispatch(saveToken(token));
         })
         .catch(error => {
           console.error(error);
@@ -134,12 +142,12 @@ const SpotifyLogin = ({navigation}) => {
     };
 
     handleFetchUserData();
-  }, [accessToken]);
+  }, [token]);
 
   return (
     <Container>
       <Title>{t('loginSpotify.title')}</Title>
-      {!accessToken && (
+      {!token && (
         <StyledButton onPress={() => Linking.openURL(authURL)}>
           <ButtonContent>
             <SpotifyLogo source={require('../assets/logo_spotify.png')} />
@@ -153,15 +161,6 @@ const SpotifyLogin = ({navigation}) => {
         loop
         style={{width: 100, height: 100, marginTop: 50}}
       />
-      {/* {accessToken && (
-        <>
-          {user && (
-            <ConnectedText>
-              Connecté en tant que : {user.display_name} ({user.email})
-            </ConnectedText>
-          )}
-        </>
-      )} */}
     </Container>
   );
 };

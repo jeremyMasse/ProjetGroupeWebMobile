@@ -1,4 +1,4 @@
-import {SAVE_USER, SAVE_TOKEN} from '../actions/user';
+import {SAVE_USER, SAVE_TOKEN, LOGOUT} from '../actions/user';
 
 const initialState = {
   token: null,
@@ -16,6 +16,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         token: action.payload,
+      };
+    case LOGOUT:
+      return {
+        ...state,
+        token: null,
+        user: {},
       };
     default:
       return state;

@@ -17,8 +17,9 @@ import GirlListenMusic from '../assets/81966-girl-listening-to-music.json';
 
 const GeneratePlaylist = ({navigation}) => {
   const dispatch = useDispatch();
-  const [token, setToken] = useState(null);
   const {user} = useSelector(state => state.user);
+  const token = useSelector(state => state.user.token);
+
   const [trackList, setTrackList] = useState({
     tracks: {items: []},
   });
@@ -67,7 +68,7 @@ const GeneratePlaylist = ({navigation}) => {
 
     let items = [];
     Object.entries(results.songs).map(([key, song]) => {
-      searchSong(token, song)
+      searchSong(token.access_token, song)
         .then(res => {
           setTrackList(prevState => {
             return {
@@ -140,7 +141,7 @@ const GeneratePlaylist = ({navigation}) => {
 
   useEffect(() => {
     if (loadingTrackList === false) {
-      createPlaylist(token, user, tempo)
+      createPlaylist(token.access_token, user, tempo)
         .then(res => {
           setPlaylist(res);
         })
@@ -166,7 +167,7 @@ const GeneratePlaylist = ({navigation}) => {
     trackList.tracks.items.map(item => {
       trackUris.push(item.uri);
     });
-    addToPlaylist(token, playlist.id, trackUris).then(() => {
+    addToPlaylist(token.access_token, playlist.id, trackUris).then(() => {
       setPlaylist([]);
       setTrackList({
         tracks: {items: []},
@@ -177,14 +178,6 @@ const GeneratePlaylist = ({navigation}) => {
 
     navigation.navigate('Playlist', {playlist: playlist.id});
   };
-
-  useEffect(() => {
-    //AsyncStorage.removeItem("accessToken");
-    AsyncStorage.getItem('accessToken').then(token => {
-      setToken(token);
-      console.log(token);
-    });
-  }, []);
 
   return (
     <Container>

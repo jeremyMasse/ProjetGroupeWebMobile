@@ -30,22 +30,24 @@ const Player = () => {
   // };
 
   useEffect(() => {
-    const checkIsFavorite = async () => {
-      try {
-        const response = await axios.get(
-          `https://api.spotify.com/v1/me/tracks/contains?ids=${track.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
+    if (token) {
+      const checkIsFavorite = async () => {
+        try {
+          const response = await axios.get(
+            `https://api.spotify.com/v1/me/tracks/contains?ids=${track.id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token.access_token}`,
+              },
             },
-          },
-        );
-        setIsFavorite(response.data[0]);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    checkIsFavorite();
+          );
+          setIsFavorite(response.data[0]);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      checkIsFavorite();
+    }
   }, [isFavorite, track, token]);
 
   return (
@@ -65,23 +67,23 @@ const Player = () => {
             {isFavorite ? (
               <Touchable
                 onPress={() => {
-                  removeFromFavorites(track.id, token).then(() =>
+                  removeFromFavorites(track.id, token.access_token).then(() =>
                     setIsFavorite(false),
                   );
                 }}>
                 <Icon name="heart" size={25} color="#2ecc71" />
-                {/* <Lottie
+                <Lottie
                   source={require('./heart.json')}
                   autoPlay
                   loop={false}
                   width={50}
                   height={50}
-                /> */}
+                />
               </Touchable>
             ) : (
               <Touchable
                 onPress={() =>
-                  addToFavorites(track.id, token).then(() =>
+                  addToFavorites(track.id, token.access_token).then(() =>
                     setIsFavorite(true),
                   )
                 }>

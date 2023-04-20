@@ -7,12 +7,11 @@ import {useNavigation} from '@react-navigation/native';
 import ActionRow from '../components/ActionRow';
 import Share from 'react-native-share';
 import {deleteTrackFromPlaylist} from '../services/Playlist.service';
-import {user} from '../reducers/user';
 export const ModalContext = createContext(null);
 
 const ModalProvider = props => {
   const dispatch = useDispatch();
-  const {token} = useSelector(state => state.user);
+  const token = useSelector(state => state.user.token);
   const {modal} = useSelector(state => state.modal);
   const type = useSelector(state => state.modal.type);
   const navigation = useNavigation();
@@ -113,7 +112,7 @@ const ModalProvider = props => {
               icon="remove-circle-outline"
               onPress={() =>
                 deleteTrackFromPlaylist(
-                  token,
+                  token.access_token,
                   modal.playlist.id,
                   modal.track.track.uri,
                   modal.track.track.name,

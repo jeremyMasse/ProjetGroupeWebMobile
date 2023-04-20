@@ -1,15 +1,15 @@
-// ThemeProvider.js
 import React from 'react';
-import {View} from 'react-native';
 import {useSelector} from 'react-redux';
+import {ThemeProvider as StyledThemeProvider} from 'styled-components/native';
+import {lightTheme, darkTheme} from '../../config/themes';
 
 const ThemeProvider = ({children}) => {
-  const theme = useSelector(state => state.theme);
-
-  const backgroundColor = theme.background;
+  const darkMode = useSelector(state => state.darkMode);
 
   return (
-    <View style={{flex: 1, backgroundColor: backgroundColor}}>{children}</View>
+    <StyledThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+      {children}
+    </StyledThemeProvider>
   );
 };
 

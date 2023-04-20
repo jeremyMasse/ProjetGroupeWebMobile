@@ -3,18 +3,26 @@ import styled from 'styled-components/native';
 import {View, Image, Text, Switch} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {useTranslation} from 'react-i18next';
+import {useSelector, useDispatch} from 'react-redux';
+import {toggleTheme} from '../../actions/themeAction';
 import {Dimensions} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {logout} from '../../actions/user';
 
 const Profil = ({user}) => {
   const {country, display_name, email, images, followers, product} = user;
   const {t, i18n} = useTranslation();
   const [language, setLanguage] = useState(i18n.language);
-  const [darkMode, setDarkMode] = useState(false);
+  const isDarkMode = useSelector(state => state.theme.isDarkMode);
+  const theme = useSelector(state => state.theme.theme);
+  const dispatch = useDispatch();
 
-  const toggleDarkMode = value => {
-    setDarkMode(value);
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+  const toggleDarkMode = () => {
+    dispatch(toggleTheme());
   };
 
   const changeLanguage = lng => {
@@ -23,7 +31,7 @@ const Profil = ({user}) => {
   };
 
   return (
-    <ProfileContainer>
+    <ProfileContainer theme={theme.theme}>
       <Avatar
         source={{
           uri: images[0]?.url || `https://robohash.org/${user.id}?set=set4`,
@@ -45,12 +53,7 @@ const Profil = ({user}) => {
       <PreferencesContainer>
         <Onglet>
           <Title>
-            <MaterialIcons
-              name="language"
-              size={30}
-              color="white"
-              // style={{position: ''}}
-            />
+            <MaterialIcons name="language" size={24} color={theme.text} />
             <TitleText>{t('profil.language')}</TitleText>
           </Title>
           <LanguagePicker
@@ -62,17 +65,28 @@ const Profil = ({user}) => {
         </Onglet>
         <Onglet>
           <Title>
-            <FontAwesome name="moon-o" size={30} color="white" />
+            <FontAwesome name="moon-o" size={24} color={theme.text} />
             <TitleText>{t('profil.darkMode')}</TitleText>
           </Title>
           <Switch
-            trackColor={{false: '#767577', true: '#81b0ff'}}
-            thumbColor={darkMode ? '#f5dd4b' : '#f4f3f4'}
-            ios_backgroundColor="#3e3e3e"
+            trackColor={{false: '#767577', true: '#169C4A'}}
+            thumbColor={isDarkMode ? '#4ECC75' : '#f4f3f4'}
             onValueChange={toggleDarkMode}
-            value={darkMode}
+            value={isDarkMode}
           />
         </Onglet>
+        <Onglet>
+          <Title>
+            <FontAwesome name="heart" size={24} color={theme.text} />
+            <TitleText>{t('profil.favorites')}</TitleText>
+          </Title>
+        </Onglet>
+        <DisconnectButton onPress={handleLogout}>
+          <Title>
+            <FontAwesome name="sign-out" size={24} color={theme.text} />
+            <TitleText>{t('profil.disconnect')}</TitleText>
+          </Title>
+        </DisconnectButton>
       </PreferencesContainer>
     </ProfileContainer>
   );
@@ -80,44 +94,44 @@ const Profil = ({user}) => {
 
 const ProfileContainer = styled.View`
   flex: 1;
-  background-color: #121212;
+  background: ${({theme}) => theme.theme.background};
   align-items: center;
   padding: 20px;
 `;
 
 const InfoContainer = styled.View`
   align-items: center;
-  background-color: #121212;
+  background-color: ${({theme}) => theme.theme.background};
 `;
 
 const DisplayName = styled.Text`
   font-size: 28px;
   font-weight: bold;
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   margin-bottom: 10px;
 `;
 
 const Email = styled.Text`
   font-size: 18px;
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   margin-bottom: 20px;
 `;
 
 const Country = styled.Text`
   font-size: 18px;
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   margin-bottom: 10px;
 `;
 
 const Followers = styled.Text`
   font-size: 18px;
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   margin-bottom: 10px;
 `;
 
 const Subscription = styled.Text`
   font-size: 18px;
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   margin-bottom: 10px;
 `;
 
@@ -131,11 +145,10 @@ const Avatar = styled.Image`
 const screenWidth = Dimensions.get('window').width;
 
 const PreferencesContainer = styled.View`
-  flex: 1;
-  background-color: black;
+  background-color: lightgrey;
   margin-top: 20px;
-  color: white;
   width: ${screenWidth}px;
+  padding-bottom: 2px;
 `;
 
 const Onglet = styled.View`
@@ -143,28 +156,40 @@ const Onglet = styled.View`
   align-items: center;
   justify-content: space-between;
   align-items: center;
-  background-color: #121212;
+  background-color: ${({theme}) => theme.theme.background};
   padding: 0 20px;
-  margin-top: 10px;
+  margin-top: 2px;
+  height: 50px;
+`;
+
+const DisconnectButton = styled.TouchableOpacity`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  align-items: center;
+  background-color: ${({theme}) => theme.theme.background};
+  padding: 0 20px;
+  margin-top: 2px;
   height: 50px;
 `;
 
 const Title = styled.View`
   flex-direction: row;
   align-items: center;
+  color: ${({theme}) => theme.theme.text};
 `;
 
 const TitleText = styled.Text`
   font-size: 20px;
   font-weight: bold;
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   margin-left: 10px;
 `;
 
 const LanguagePicker = styled(Picker)`
   width: 150px;
   height: 40px;
-  color: white;
+  color: ${({theme}) => theme.theme.text};
 `;
 
 export default Profil;

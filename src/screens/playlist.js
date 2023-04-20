@@ -48,11 +48,11 @@ const Playlist = ({route}) => {
   useEffect(() => {
     const playlist_id = route.params.playlist;
 
-    getPlaylist(token, playlist_id)
+    getPlaylist(token.access_token, playlist_id)
       .then(res => setPlaylist(res))
       .catch(error => console.log(error));
 
-    getPlaylistTracks(token, playlist_id)
+    getPlaylistTracks(token.access_token, playlist_id)
       .then(res => setTracks(res.items))
       .catch(error => console.log(error));
   }, [route.params.playlist]);
@@ -197,7 +197,7 @@ const Playlist = ({route}) => {
                 icon="remove-circle-outline"
                 onPress={() =>
                   deleteTrackFromPlaylist(
-                    token,
+                    token.access_token,
                     playlist.id,
                     track.track.uri,
                     track.track.name,

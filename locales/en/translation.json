@@ -10,6 +10,8 @@
   "profil": {
     "language": "Langage",
     "darkMode": "Dark mode",
+    "disconnect": "Disconnect",
+    "favorites": "Favorites",
     "country": "Country",
     "followers": "Followers",
     "subscription": "Subscription Spotify",
