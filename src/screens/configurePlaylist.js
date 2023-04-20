@@ -96,7 +96,7 @@ const ConfigurePlaylist = ({route}) => {
         )}
         {option === 'bpm' && (
           <ConfigureContainer>
-            <ConfigureTitle>What is your driving style ?</ConfigureTitle>
+            <ConfigureTitle>What is your BPM ?</ConfigureTitle>
             <OptionInput>
               <TouchableOption
                 onPress={() =>
@@ -148,12 +148,12 @@ const ConfigurePlaylist = ({route}) => {
       </ConfigureMain>
       <ConfigureBottom>
         <TouchablePrevious
-          onPress={() => navigation.navigate('PlaylistGenerator')}>
+          onPress={() => navigation.navigate('CategoriesGeneratePlaylist')}>
           <TextPrevious>Previous</TextPrevious>
         </TouchablePrevious>
         <TouchableGenerate
           onPress={() => {
-            navigation.navigate('GeneratePlaylist2', {
+            navigation.navigate('PlaylistGenerator', {
               option: option,
               numberOfSongs: numberOfSongs,
               drivingStyle: drivingStyle,
@@ -252,7 +252,7 @@ const TextOption = styled.Text`
 const ConfigureBottom = styled.View`
   flex-direction: row;
   position: absolute;
-  bottom: 50px;
+  bottom: 75px;
   left: 0;
   width: 100%;
   gap: 25px;
