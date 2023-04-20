@@ -8,7 +8,6 @@ import './i18n';
 import SplashScreen from 'react-native-splash-screen';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import TrackPlayer from 'react-native-track-player';
-// import ThemeProvider from './src/components/ThemeProvider';
 import ThemeProviderWrapper from './src/components/ThemeProviderWrapper';
 
 const App = () => {

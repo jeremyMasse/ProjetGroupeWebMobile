@@ -18,6 +18,7 @@ const Profil = ({user}) => {
   const theme = useSelector(state => state.theme.theme);
   const dispatch = useDispatch();
 
+  console.log(themeGlobal);
   const handleLogout = () => {
     dispatch(logout());
   };

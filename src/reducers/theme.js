@@ -1,11 +1,12 @@
 // reducers/themeReducer.js
 import {TOGGLE_THEME} from '../actions/themeAction';
+import {theme} from '../config/themes';
 
 const initialState = {
   isDarkMode: false,
   theme: {
-    text: 'black',
-    background: 'white',
+    text: theme.lightTextColor,
+    background: theme.lightBackgroundColor,
   },
 };
 
@@ -16,8 +17,8 @@ export default function themeReducer(state = initialState, action) {
         ...state,
         isDarkMode: !state.isDarkMode,
         theme: state.isDarkMode
-          ? {text: 'black', background: 'white'}
-          : {text: 'white', background: '#121212'},
+          ? {text: theme.lightTextColor, background: theme.lightBackgroundColor}
+          : {text: theme.darkTextColor, background: theme.darkBackgroundColor},
       };
     default:
       return state;
