@@ -124,7 +124,7 @@ const TrackView = styled.View`
 `;
 
 const TrackTitle = styled.Text`
-  color: #fff;
+  color: ${({theme}) => theme.theme.text};
 `;
 
 const TrackArtist = styled.Text`

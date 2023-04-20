@@ -113,7 +113,7 @@ const Playlist = ({route}) => {
 };
 
 const PlaylistView = styled.ScrollView`
-  background: #121212;
+  background-color: ${({theme}) => theme.theme.background};
   flex: 1;
 `;
 
@@ -132,7 +132,7 @@ const OwnerImage = styled.Image`
 `;
 
 const OwnerName = styled.Text`
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   font-weight: bold;
   margin: 15px 0;
 `;

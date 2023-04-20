@@ -213,7 +213,7 @@ const Home = ({route, navigation}) => {
 
 const HomeView = styled.View`
   flex: 1;
-  background: #121212;
+  background-color: ${({theme}) => theme.theme.background};
 `;
 
 const LibraryHeader = styled.View`
@@ -231,7 +231,7 @@ const ProfilImage = styled.Image`
 
 const PlaylistNameInput = styled.TextInput`
   text-align: center;
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   font-size: 16px;
   font-weight: bold;
   margin: 10px 0;

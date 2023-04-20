@@ -107,7 +107,7 @@ const Library = () => {
 };
 
 const LibraryView = styled.ScrollView`
-  background: #121212;
+  background-color: ${({theme}) => theme.theme.background};
   flex: 1;
 `;
 const LibraryHeader = styled.View`
@@ -134,7 +134,7 @@ const ImageAdd = styled.View`
 `;
 
 const TextAdd = styled.Text`
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   margin-left: 10px;
   font-size: 16px;
   font-weight: bold;
@@ -147,9 +147,6 @@ const ProfilImage = styled.Image`
 
 const AddIcon = styled.View`
   margin-left: auto;
-`;
-const TextTest = styled.Text`
-  color: white;
 `;
 const Touchable = styled.TouchableOpacity``;
 

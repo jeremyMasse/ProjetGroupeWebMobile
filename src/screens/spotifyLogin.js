@@ -21,7 +21,7 @@ const Container = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
-  background-color: #121212;
+  background-color: ${({theme}) => theme.theme.background};
 `;
 
 const SpotifyLogo = styled.Image`
@@ -33,7 +33,7 @@ const SpotifyLogo = styled.Image`
 const Title = styled.Text`
   font-size: 24px;
   font-weight: bold;
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   margin-bottom: 70px;
 `;
 
@@ -54,7 +54,7 @@ const ButtonContent = styled.View`
 const ButtonText = styled.Text`
   font-size: 16px;
   font-weight: bold;
-  color: white;
+  color: ${({theme}) => theme.theme.text};
 `;
 
 const SpotifyLogin = () => {

@@ -169,7 +169,7 @@ const ConfigurePlaylist = ({route}) => {
 
 const ConfigureView = styled.View`
   flex: 1;
-  background: #121212;
+  background-color: ${({theme}) => theme.theme.background};
 `;
 
 const LibraryHeader = styled.View`
@@ -211,7 +211,7 @@ const QuantityInput = styled.View`
 `;
 
 const TextQuantity = styled.Text`
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   border: 1px solid white;
   height: 100%;
   padding: 5px 10px;
@@ -245,7 +245,7 @@ const TouchableOption = styled.TouchableOpacity`
 `;
 
 const TextOption = styled.Text`
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   font-weight: bold;
 `;
 
@@ -272,7 +272,7 @@ const TouchableGenerate = styled.TouchableOpacity`
 `;
 
 const TextPrevious = styled.Text`
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   text-transform: uppercase;
   font-weight: bold;
 `;

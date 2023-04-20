@@ -7,7 +7,7 @@ const Title = ({title}) => {
 
 const TitleText = styled.Text`
   font-size: 20px;
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   font-weight: bold;
 `;
 

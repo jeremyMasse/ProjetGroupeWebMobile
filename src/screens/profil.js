@@ -27,14 +27,14 @@ const ProfileContainer = styled.View`
   flex: 1;
   align-items: center;
   justify-content: center;
-  background-color: #121212;
+  background-color: ${({theme}) => theme.theme.background};
 `;
 
 const LoadingContainer = styled.View`
   flex: 1;
   align-items: center;
   justify-content: center;
-  background-color: #121212;
+  background-color: ${({theme}) => theme.theme.background};
 `;
 
 const LoadingIndicator = styled(ActivityIndicator)`

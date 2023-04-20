@@ -19,13 +19,13 @@ const CardGrid = props => {
 };
 
 const GridView = styled.View`
-  background: #1e1e1e;
+  background-color: ${({theme}) => theme.theme.background};
   flex: 1 0 45%;
   margin: 5px;
 `;
 
 const GridTitle = styled.Text`
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   text-align: center;
   margin: 5px 0;
 `;

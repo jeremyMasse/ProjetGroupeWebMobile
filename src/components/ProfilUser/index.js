@@ -9,7 +9,7 @@ import {Dimensions} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {logout} from '../../actions/user';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const Profil = ({user}) => {
   const {country, display_name, email, images, followers, product} = user;
@@ -20,7 +20,6 @@ const Profil = ({user}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  console.log(themeGlobal);
   const handleLogout = () => {
     dispatch(logout());
   };

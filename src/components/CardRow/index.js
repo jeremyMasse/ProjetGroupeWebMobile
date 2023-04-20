@@ -50,7 +50,7 @@ const Artist = styled.Text`
 `;
 
 const Title = styled.Text`
-  color: white;
+  color: ${({theme}) => theme.theme.text};
   font-size: 16px;
 `;
 

@@ -11,8 +11,6 @@ import TrackPlayer from 'react-native-track-player';
 import ThemeProviderWrapper from './src/components/ThemeProviderWrapper';
 
 const App = () => {
-  // const theme = useSelector(state => state.theme.theme);
-
   useEffect(() => {
     SplashScreen.hide(); //hides the splash screen on app load.
     TrackPlayer.setupPlayer();

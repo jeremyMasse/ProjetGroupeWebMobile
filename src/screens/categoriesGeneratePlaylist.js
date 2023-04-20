@@ -43,12 +43,14 @@ const PlaylistGenerator = () => {
         />
         <CardGrid
           title={t('generator.playlistWeather')}
+          img="https://i.pinimg.com/564x/0b/c9/b7/0bc9b785836ce450a75fcd4f82a6644f.jpg"
           onPress={() =>
             navigation.navigate('ConfigurePlaylist', {option: 'weather'})
           }
         />
         <CardGrid
           title={t('generator.playlistMood')}
+          img="https://i.pinimg.com/564x/95/7f/cf/957fcfc0aed065f8e2eff9103bf1f8ef.jpg"
           onPress={() =>
             navigation.navigate('ConfigurePlaylist', {option: 'mood'})
           }
@@ -60,7 +62,7 @@ const PlaylistGenerator = () => {
 
 const GeneratorView = styled.View`
   flex: 1;
-  background: #121212;
+  background-color: ${({theme}) => theme.theme.background};
 `;
 
 const LibraryHeader = styled.View`
