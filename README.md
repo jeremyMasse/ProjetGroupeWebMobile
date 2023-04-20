@@ -21,3 +21,5 @@ pour le 20 avril :
 - demander à chatgpt de nous faire une playlist en fonction de nos artistes préféré (optionnel)
 - page d'une musique
 - voir la musique qui se joue en cours (optionnel)
+
+https://youtu.be/hNObXs65vuM
