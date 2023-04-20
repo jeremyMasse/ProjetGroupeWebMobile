@@ -239,13 +239,15 @@ const PlaylistNameInput = styled.TextInput`
 `;
 
 const StyledText = styled.Text`
-  color: black;
+  color: #2ecc71;
+  text-transform: uppercase;
+  font-weight: bold;
 `;
 
 const StyledTouchable = styled.TouchableOpacity`
-  border: 1px;
-  border-color: white;
-  padding: 10px;
+  border: 2px solid #2ecc71;
+  padding: 10px 30px;
+  border-radius: 25px;
   justify-content: center;
   align-items: center;
 `;
