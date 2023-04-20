@@ -5,6 +5,8 @@ import {useSelector} from 'react-redux';
 import Title from '../components/Title';
 import Icon from 'react-native-vector-icons/Feather';
 
+const listGenre = ['R&B', 'Rap', 'Hip-hop', 'Electronique'];
+
 const ConfigurePlaylist = ({route}) => {
   const {user} = useSelector(state => state.user);
   const navigation = useNavigation();
@@ -12,7 +14,16 @@ const ConfigurePlaylist = ({route}) => {
 
   const [numberOfSongs, setNumberOfSongs] = useState(2);
 
-  const [drivingStyle, setDrivingStyle] = useState('fast');
+  const [drivingStyle, setDrivingStyle] = useState(
+    option === 'driving'
+      ? {type: 'driving', value: 'fast'}
+      : {type: 'bpm', value: 0},
+  );
+  const [generateOption, setGenerateOption] = useState({
+    option: {
+      genre: [],
+    },
+  });
 
   const handleIncrement = () => {
     setNumberOfSongs(prevCount => prevCount + 1);
@@ -35,11 +46,10 @@ const ConfigurePlaylist = ({route}) => {
             }}
           />
         )}
-
         <Title title="Generate a new playlist" />
       </LibraryHeader>
       <ConfigureMain>
-        <ConfigureQuantity>
+        <ConfigureContainer>
           <ConfigureTitle>
             How many songs do you want in your playlist?
           </ConfigureTitle>
@@ -52,26 +62,89 @@ const ConfigurePlaylist = ({route}) => {
               <Icon name="plus" color="white" size={25} />
             </TouchableQuantity>
           </QuantityInput>
-        </ConfigureQuantity>
+        </ConfigureContainer>
         {option === 'driving' && (
-          <ConfigureDriving>
+          <ConfigureContainer>
             <ConfigureTitle>What is your driving style ?</ConfigureTitle>
-            <DrivingInput>
-              <TouchableDriving
-                onPress={() => setDrivingStyle('fast')}
-                selected={drivingStyle === 'fast'}
+            <OptionInput>
+              <TouchableOption
+                onPress={() =>
+                  setDrivingStyle(prevState => {
+                    let newValue = {...prevState};
+                    newValue.value = 'fast';
+                    return newValue;
+                  })
+                }
+                selected={drivingStyle.value === 'fast'}
                 value="fast">
-                <TextDriving>Fast & Furious</TextDriving>
-              </TouchableDriving>
-              <TouchableDriving
-                onPress={() => setDrivingStyle('chill')}
-                selected={drivingStyle === 'chill'}
+                <TextOption>Fast & Furious</TextOption>
+              </TouchableOption>
+              <TouchableOption
+                onPress={() =>
+                  setDrivingStyle(prevState => {
+                    let newValue = {...prevState};
+                    newValue.value = 'chill';
+                    return newValue;
+                  })
+                }
+                selected={drivingStyle.value === 'chill'}
                 value="chill">
-                <TextDriving>Chill & Vibe</TextDriving>
-              </TouchableDriving>
-            </DrivingInput>
-          </ConfigureDriving>
+                <TextOption>Chill & Vibe</TextOption>
+              </TouchableOption>
+            </OptionInput>
+          </ConfigureContainer>
         )}
+        {option === 'bpm' && (
+          <ConfigureContainer>
+            <ConfigureTitle>What is your driving style ?</ConfigureTitle>
+            <OptionInput>
+              <TouchableOption
+                onPress={() =>
+                  setDrivingStyle(prevState => {
+                    let newValue = {...prevState};
+                    newValue.value = Math.floor(Math.random() * 71) + 80;
+                    return newValue;
+                  })
+                }
+                value={drivingStyle}>
+                <TextOption>
+                  {drivingStyle.value === 0
+                    ? 'Scanner votre bpm'
+                    : drivingStyle.value}
+                </TextOption>
+              </TouchableOption>
+            </OptionInput>
+          </ConfigureContainer>
+        )}
+        <ConfigureContainer>
+          <ConfigureTitle>Which kind of song ?</ConfigureTitle>
+          <OptionInput>
+            {listGenre.map((item, index) => {
+              return (
+                <TouchableOption
+                  key={index}
+                  onPress={() =>
+                    setGenerateOption(prevState => {
+                      const genre = item;
+                      const newValue = {...prevState};
+                      const genreIndex = newValue.option.genre.indexOf(genre);
+
+                      if (genreIndex === -1) {
+                        newValue.option.genre.push(genre);
+                      } else {
+                        newValue.option.genre.splice(genreIndex, 1);
+                      }
+                      return newValue;
+                    })
+                  }
+                  selected={generateOption.option.genre.includes(item)}
+                  value={item}>
+                  <TextOption>{item}</TextOption>
+                </TouchableOption>
+              );
+            })}
+          </OptionInput>
+        </ConfigureContainer>
       </ConfigureMain>
       <ConfigureBottom>
         <TouchablePrevious
@@ -79,13 +152,14 @@ const ConfigurePlaylist = ({route}) => {
           <TextPrevious>Previous</TextPrevious>
         </TouchablePrevious>
         <TouchableGenerate
-          onPress={() =>
+          onPress={() => {
             navigation.navigate('GeneratePlaylist2', {
               option: option,
               numberOfSongs: numberOfSongs,
               drivingStyle: drivingStyle,
-            })
-          }>
+              genres: generateOption.option.genre,
+            });
+          }}>
           <TextGenerate>Generate</TextGenerate>
         </TouchableGenerate>
       </ConfigureBottom>
@@ -113,12 +187,8 @@ const ProfilImage = styled.Image`
 
 const ConfigureMain = styled.View``;
 
-const ConfigureQuantity = styled.View`
-  margin: 0 auto;
-`;
-
-const ConfigureDriving = styled.View`
-  margin: 0 auto;
+const ConfigureContainer = styled.View`
+  margin: 4px auto;
 `;
 
 const ConfigureTitle = styled.Text`
@@ -158,14 +228,14 @@ const TouchableQuantity = styled.TouchableOpacity`
   border-radius: 5px;
 `;
 
-const DrivingInput = styled.View`
+const OptionInput = styled.View`
   flex-direction: row;
   align-items: center;
   gap: 10px;
   justify-content: center;
 `;
 
-const TouchableDriving = styled.TouchableOpacity`
+const TouchableOption = styled.TouchableOpacity`
   border: 1px solid white;
   flex-direction: row;
   align-items: center;
@@ -174,7 +244,7 @@ const TouchableDriving = styled.TouchableOpacity`
   background-color: ${({selected}) => (selected ? '#2ecc71' : 'transparent')};
 `;
 
-const TextDriving = styled.Text`
+const TextOption = styled.Text`
   color: white;
   font-weight: bold;
 `;

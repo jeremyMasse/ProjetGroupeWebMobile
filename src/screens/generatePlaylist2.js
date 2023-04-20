@@ -14,9 +14,10 @@ import LottieView from 'lottie-react-native';
 import GirlListenMusic from '../assets/81966-girl-listening-to-music.json';
 import {handlePlay} from '../services/Player.service';
 import {player, saveTrack} from '../actions/player';
+import {err} from 'react-native-svg/lib/typescript/xml';
 
 const Home = ({route, navigation}) => {
-  const token = useSelector(state => state.user.token);
+  const token = useSelector(state => state.user.token?.access_token);
   const {user} = useSelector(state => state.user);
   const dispatch = useDispatch();
   // console.log(token);
@@ -36,30 +37,61 @@ const Home = ({route, navigation}) => {
   const [loadingTrackList, setloadingTrackList] = useState(true);
   const [loadingPlaylist, setloadingPlaylist] = useState(true);
 
-  const generate = async (quantity, driving) => {
-    const openaiResponse = await axios.post(
-      'https://api.openai.com/v1/chat/completions',
-      {
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'user',
-            content: `You are an musician, fitness and JSON formatter expert. Could you make me a tracklist of ${quantity} songs for driving. My driving style is : ${driving}. The result must be in JSON Format his structure is a main key called 'songs' it's an array of song each songs are composed of title and artist i only want the json no useless text with.`,
-            // `You are an musician, driver and JSON formatter expert. Could you make me a tracklist of ${quantity} songs for driving. My driving style is : ${driving}. The result must be in JSON Format with title and artist.`,
-          },
-        ],
-        // stop: ['\n'],
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
-          'Content-Type': 'application/json',
+  const generate = async (quantity, param, option) => {
+    let results = null;
+    let promptGenre = '';
+    if (option.length !== 0) {
+      promptGenre += 'that the kind are only: ';
+      promptGenre += option.join(', ');
+    }
+
+    if (param.type === 'driving') {
+      const openaiResponse = await axios.post(
+        'https://api.openai.com/v1/chat/completions',
+        {
+          model: 'gpt-3.5-turbo',
+          messages: [
+            {
+              role: 'user',
+              content: `You are an musician, fitness and JSON formatter expert. Could you make me a tracklist of ${quantity} songs ${promptGenre} for driving. My driving style is : ${param.value}.The result must be in JSON Format his structure is a main key called 'songs' it's an array of song each songs are composed of title and artist i only want the json no useless text with.`,
+              // `You are an musician, driver and JSON formatter expert. Could you make me a tracklist of ${quantity} songs for driving. My driving style is : ${driving}. The result must be in JSON Format with title and artist.`,
+            },
+          ],
+          // stop: ['\n'],
         },
-      },
-    );
-    const results = JSON.parse(openaiResponse.data.choices[0].message.content);
-    // console.log(results);
-    // console.log(results.songs);
+        {
+          headers: {
+            Authorization: `Bearer ${OPENAI_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      results = JSON.parse(openaiResponse.data.choices[0].message.content);
+    } else {
+      const openaiResponse = await axios.post(
+        'https://api.openai.com/v1/chat/completions',
+        {
+          model: 'gpt-3.5-turbo',
+          messages: [
+            {
+              role: 'user',
+              content:
+                // 'You are an musician, fitness and JSON formatter expert. Could you make me a tracklist of 10 unpopular songs with a tempo that match my BPM. My BPM is currently at 110. The result must be in JSON Format with title and artist.',
+                `You are an musician, fitness and JSON formatter expert. Could you make me a tracklist of ${quantity} unpopular songs ${promptGenre} with a tempo that match my BPM. My BPM is currently at ${param.value}. The result must be in JSON Format his structure is a main key called 'songs' it's an array of song each songs are composed of title and artist i only want the json no useless text with.`,
+            },
+          ],
+          // stop: ['\n'],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${OPENAI_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      results = JSON.parse(openaiResponse.data.choices[0].message.content);
+    }
+    console.log(results.songs);
     let items = [];
     await Object.entries(results.songs).map(([key, song]) => {
       searchSong(token, song)
@@ -74,7 +106,7 @@ const Home = ({route, navigation}) => {
             };
           });
         })
-        .catch(err => console.log(err))
+        .catch(err => console.log('err: ', err))
         .finally(() => {
           setloadingTrackList(false);
           // trackList.tracks.items.map(item => {
@@ -87,19 +119,22 @@ const Home = ({route, navigation}) => {
   useEffect(() => {
     const numberOfSongs = route.params.numberOfSongs;
     const drivingStyle = route.params.drivingStyle;
-    generate(numberOfSongs, drivingStyle);
-    // console.log(token, playlist.id, trackUris);
+    const OptionGenre = route.params.genres;
+    generate(numberOfSongs, drivingStyle, OptionGenre);
     if (loadingTrackList === false) {
       createPlaylist(token, user, drivingStyle)
         .then(res => {
           setPlaylist(res);
           console.log(res);
         })
+        .catch(error => {
+          console.log('ici', error);
+        })
         .finally(() => {
           setloadingPlaylist(false);
         });
     }
-
+    // console.log(token, playlist.id{}, trackUris);
     // return () => {
     //   setPlaylist([]);
     //   setTrackList({tracks: {items: []}});
