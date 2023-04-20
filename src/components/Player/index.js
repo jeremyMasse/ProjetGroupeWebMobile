@@ -72,13 +72,13 @@ const Player = () => {
                   );
                 }}>
                 <Icon name="heart" size={25} color="#2ecc71" />
-                <Lottie
+                {/* <Lottie
                   source={require('./heart.json')}
                   autoPlay
                   loop={false}
                   width={50}
                   height={50}
-                />
+                /> */}
               </Touchable>
             ) : (
               <Touchable

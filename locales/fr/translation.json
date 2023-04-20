@@ -2,10 +2,7 @@
   "header": {
     "profil": "Profile",
     "addPlaylist": "Ajouter playlist",
-    "spotifyLogin": "Connexion Spotify",
-    "library": "bibiotheque",
-    "playlist": "Playlist",
-    "home": "Accueil"
+    "library": "Bibiotheque"
   },
   "profil": {
     "language": "Langage",
@@ -36,6 +33,13 @@
     "playlistBpm": "Trouves une nouvelle playlist en fonction de ton bpm",
     "playlistDriving": "Trouves une nouvelle playlist pour conduire",
     "playlistWeather": "Trouves une nouvelle playlist en fonction de la météo",
-    "playlistMood": "Trouves une nouvelle playlist basé sur ton humeur"
+    "playlistMood": "Trouves une nouvelle playlist basé sur ton humeur",
+    "nbrSongs": "Combien de musique vous voulez dans votre playlist ?",
+    "songs": "Musiques",
+    "styleDriving": "Quel est ton style de conduite ?",
+    "bpm": "Quel est ton bpm ?",
+    "kindSong": "Quel type de musique ?",
+    "previous": "Retour",
+    "generate": "Générer"
   }
 }

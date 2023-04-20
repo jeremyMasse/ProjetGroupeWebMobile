@@ -4,12 +4,14 @@ import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import Title from '../components/Title';
 import Icon from 'react-native-vector-icons/Feather';
+import {useTranslation} from 'react-i18next';
 
 const listGenre = ['R&B', 'Rap', 'Hip-hop', 'Electronique'];
 
 const ConfigurePlaylist = ({route}) => {
-  const {user} = useSelector(state => state.user);
+  const {t} = useTranslation();
   const navigation = useNavigation();
+  const {user} = useSelector(state => state.user);
   const option = route.params.option;
 
   const [numberOfSongs, setNumberOfSongs] = useState(2);
@@ -46,18 +48,18 @@ const ConfigurePlaylist = ({route}) => {
             }}
           />
         )}
-        <Title title="Generate a new playlist" />
+        <Title title={t('library.addPlaylist')} />
       </LibraryHeader>
       <ConfigureMain>
         <ConfigureContainer>
-          <ConfigureTitle>
-            How many songs do you want in your playlist?
-          </ConfigureTitle>
+          <ConfigureTitle>{t('generator.nbrSongs')}</ConfigureTitle>
           <QuantityInput>
             <TouchableQuantity onPress={handleDecrement}>
               <Icon name="minus" color="white" size={25} />
             </TouchableQuantity>
-            <TextQuantity>{numberOfSongs} Songs</TextQuantity>
+            <TextQuantity>
+              {numberOfSongs} {t('generator.songs')}
+            </TextQuantity>
             <TouchableQuantity onPress={handleIncrement}>
               <Icon name="plus" color="white" size={25} />
             </TouchableQuantity>
@@ -65,7 +67,7 @@ const ConfigurePlaylist = ({route}) => {
         </ConfigureContainer>
         {option === 'driving' && (
           <ConfigureContainer>
-            <ConfigureTitle>What is your driving style ?</ConfigureTitle>
+            <ConfigureTitle>{t('generator.styleDriving')}</ConfigureTitle>
             <OptionInput>
               <TouchableOption
                 onPress={() =>
@@ -96,7 +98,7 @@ const ConfigurePlaylist = ({route}) => {
         )}
         {option === 'bpm' && (
           <ConfigureContainer>
-            <ConfigureTitle>What is your BPM ?</ConfigureTitle>
+            <ConfigureTitle>{t('generator.bpm')}</ConfigureTitle>
             <OptionInput>
               <TouchableOption
                 onPress={() =>
@@ -117,7 +119,7 @@ const ConfigurePlaylist = ({route}) => {
           </ConfigureContainer>
         )}
         <ConfigureContainer>
-          <ConfigureTitle>Which kind of song ?</ConfigureTitle>
+          <ConfigureTitle>{t('generator.kindSong')}</ConfigureTitle>
           <OptionInput>
             {listGenre.map((item, index) => {
               return (
@@ -149,7 +151,7 @@ const ConfigurePlaylist = ({route}) => {
       <ConfigureBottom>
         <TouchablePrevious
           onPress={() => navigation.navigate('CategoriesGeneratePlaylist')}>
-          <TextPrevious>Previous</TextPrevious>
+          <TextPrevious>{t('generator.previous')}</TextPrevious>
         </TouchablePrevious>
         <TouchableGenerate
           onPress={() => {
@@ -160,7 +162,7 @@ const ConfigurePlaylist = ({route}) => {
               genres: generateOption.option.genre,
             });
           }}>
-          <TextGenerate>Generate</TextGenerate>
+          <TextGenerate>{t('generator.generate')}</TextGenerate>
         </TouchableGenerate>
       </ConfigureBottom>
     </ConfigureView>

@@ -1,11 +1,8 @@
 {
   "header": {
     "profil": "Profil",
-    "addPlaylist": "add playlist",
-    "spotifyLogin": "Login Spotify",
-    "library": "library",
-    "playlist": "Playlist",
-    "home": "Home"
+    "addPlaylist": "Add playlist",
+    "library": "Library"
   },
   "profil": {
     "language": "Langage",
@@ -36,6 +33,13 @@
     "playlistBpm": "Find a new playlist that matches your bpm",
     "playlistDriving": "Find a new playlist a new playlist for you driving",
     "playlistWeather": "Find a new playlist that matches weather",
-    "playlistMood": "Find a new playlist based on your mood"
+    "playlistMood": "Find a new playlist based on your mood",
+    "nbrSongs": "How many songs do you want in your playlist ?",
+    "songs": "Songs",
+    "styleDriving": "What is your driving style ?",
+    "bpm": "What is your BPM ?",
+    "kindSong": "Which kind of song ?",
+    "previous": "Previous",
+    "generate": "Generate"
   }
 }
