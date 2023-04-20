@@ -16,7 +16,7 @@ const ActionRow = props => {
 const ActionView = styled.View`
   flex-direction: row;
   align-items: center;
-  margin: 10px 0;
+  margin: 5px;
 `;
 
 const ActionText = styled.Text`

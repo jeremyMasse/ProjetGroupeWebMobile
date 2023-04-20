@@ -76,7 +76,8 @@ const Library = () => {
           <ImageAdd>
             <Icon name="add" size={75} color="#b2b2b2" />
           </ImageAdd>
-          <Touchable onPress={() => navigation.navigate('PlaylistGenerator')}>
+          <Touchable
+            onPress={() => navigation.navigate('CategoriesGeneratePlaylist')}>
             <TextAdd>{t('library.addPlaylist')}</TextAdd>
           </Touchable>
         </ViewAdd>
@@ -115,6 +116,7 @@ const LibraryHeader = styled.View`
   padding: 10px;
   border-bottom-width: 1px;
   border-bottom-color: black;
+  margin-bottom: 10px;
 `;
 
 const LibraryMain = styled.View``;
@@ -122,6 +124,7 @@ const LibraryMain = styled.View``;
 const ViewAdd = styled.View`
   flex-direction: row;
   align-items: center;
+  margin: 5px;
 `;
 
 const ImageAdd = styled.View`

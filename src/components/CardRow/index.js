@@ -32,6 +32,7 @@ const CardRow = props => {
 const CardContainer = styled.View`
   flex-direction: row;
   align-items: center;
+  margin: 5px;
 `;
 
 const CardImage = styled.Image``;

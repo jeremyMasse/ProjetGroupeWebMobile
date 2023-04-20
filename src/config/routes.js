@@ -16,6 +16,7 @@ import ConfigurePlaylist from '../screens/configurePlaylist';
 import CategoriesGeneratePlaylist from '../screens/categoriesGeneratePlaylist';
 import Profil from '../screens/profil';
 import Player from '../components/Player';
+import Favorites from '../screens/favorites';
 
 const Stack = createNativeStackNavigator();
 
@@ -55,16 +56,16 @@ const TabNavigator = () => {
         tabBarIconStyle: {},
       })}>
       <Tab.Screen
-        name="PlaylistGenerator"
-        component={PlaylistGenerator}
+        name="CategoriesGeneratePlaylist"
+        component={CategoriesGeneratePlaylist}
         options={{
           tabBarLabel: t('header.addPlaylist'),
-          tabBarIcon: tabPlaylistGenerator => {
+          tabBarIcon: CategoriesGeneratePlaylist => {
             return (
               <Vinyle
                 name="record-vinyl"
                 size={24}
-                color={tabPlaylistGenerator.focused ? '#fff' : '#8e8e93'}
+                color={CategoriesGeneratePlaylist.focused ? '#fff' : '#8e8e93'}
               />
             );
           },
@@ -82,8 +83,8 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="CategoriesGeneratePlaylist"
-        component={CategoriesGeneratePlaylist}
+        name="PlaylistGenerator"
+        component={PlaylistGenerator}
         options={{
           unmountOnBlur: true,
           headerShown: false,
@@ -113,6 +114,17 @@ const TabNavigator = () => {
       <Tab.Screen
         name="Playlist"
         component={Playlist}
+        options={{
+          headerShown: false,
+          tabBarItemStyle: {
+            display: 'none',
+          },
+        }}
+      />
+
+      <Tab.Screen
+        name="Favorites"
+        component={Favorites}
         options={{
           headerShown: false,
           tabBarItemStyle: {

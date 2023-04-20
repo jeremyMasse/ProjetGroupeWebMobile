@@ -1,5 +1,10 @@
-import React, {useCallback, useRef, useMemo, createContext} from 'react';
-import {Text} from 'react-native';
+import React, {
+  useCallback,
+  useRef,
+  useMemo,
+  createContext,
+  useState,
+} from 'react';
 import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import {useDispatch, useSelector} from 'react-redux';
 import CardRow from '../components/CardRow';
@@ -8,6 +13,7 @@ import ActionRow from '../components/ActionRow';
 import Share from 'react-native-share';
 import {deleteTrackFromPlaylist} from '../services/Playlist.service';
 import {useTranslation} from 'react-i18next';
+import styled from 'styled-components';
 
 export const ModalContext = createContext(null);
 
@@ -18,6 +24,7 @@ const ModalProvider = props => {
   const token = useSelector(state => state.user.token);
   const {modal} = useSelector(state => state.modal);
   const type = useSelector(state => state.modal.type);
+  const [playlist, setPlaylist] = useState([]);
 
   // hooks
   const sheetRef = useRef(null);
@@ -27,8 +34,10 @@ const ModalProvider = props => {
   const handleSheetChange = useCallback(index => {
     console.log('handleSheetChange', index);
   }, []);
-  const handleSnapPress = useCallback(index => {
+  const handleSnapPress = useCallback((index, playlist) => {
     sheetRef.current?.snapToIndex(index);
+    setPlaylist(playlist);
+    console.log(playlist);
   }, []);
   const handleClosePress = useCallback(() => {
     sheetRef.current?.close();
@@ -46,6 +55,18 @@ const ModalProvider = props => {
       .catch(err => {
         err && console.log(err);
       });
+  };
+
+  const handleDelete = async () => {
+    const res = await deleteTrackFromPlaylist(
+      token.access_token,
+      playlist.id,
+      modal.track.uri,
+      modal.track.name,
+      playlist.name,
+      // modal.setTracks,
+    );
+    console.log(res, 'res');
   };
 
   return (
@@ -69,7 +90,6 @@ const ModalProvider = props => {
         }}
         handleIndicatorStyle={{backgroundColor: '#a1a1a1'}}
         backdropComponent={renderBackdrop}>
-        {/* Modal Playlist  */}
         {type === 'playlist' && (
           <>
             <CardRow
@@ -100,29 +120,21 @@ const ModalProvider = props => {
             />
           </>
         )}
-        {/* Modal Playlist  */}
         {type === 'track' && (
           <>
-            <CardRow
-              img={modal.track?.album?.images[0].url}
-              width={50}
-              height={50}
-              title={modal.track?.name}
-              artist={modal.track?.artists?.map(artist => `${artist.name}, `)}
-            />
+            <ModalHeader>
+              <CardRow
+                img={modal.track?.album?.images[0].url}
+                width={50}
+                height={50}
+                title={modal.track?.name}
+                artist={modal.track?.artists?.map(artist => `${artist.name}, `)}
+              />
+            </ModalHeader>
             <ActionRow
               title={t('playlist.removeMusic')}
               icon="remove-circle-outline"
-              onPress={() =>
-                deleteTrackFromPlaylist(
-                  token.access_token,
-                  modal.playlist.id,
-                  modal.track.track.uri,
-                  modal.track.track.name,
-                  modal.playlist.name,
-                  modal.setTracks,
-                )
-              }
+              onPress={() => handleDelete()}
             />
             <ActionRow
               title={t('playlist.share')}
@@ -134,5 +146,10 @@ const ModalProvider = props => {
     </ModalContext.Provider>
   );
 };
+
+const ModalHeader = styled.View`
+  border-bottom-width: 1px;
+  border-bottom-color: black;
+`;
 
 export default ModalProvider;
