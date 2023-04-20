@@ -76,7 +76,9 @@ const Library = () => {
           <ImageAdd>
             <Icon name="add" size={75} color="#b2b2b2" />
           </ImageAdd>
-          <TextAdd>{t('library.addPlaylist')}</TextAdd>
+          <Touchable onPress={() => navigation.navigate('PlaylistGenerator')}>
+            <TextAdd>{t('library.addPlaylist')}</TextAdd>
+          </Touchable>
         </ViewAdd>
 
         {playlists &&

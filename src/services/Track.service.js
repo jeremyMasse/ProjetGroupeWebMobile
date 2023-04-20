@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
+import TrackPlayer from 'react-native-track-player';
 
 export const addToFavorites = async (trackId, token) => {
   console.log('tyre');

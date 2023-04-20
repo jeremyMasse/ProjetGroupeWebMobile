@@ -11,10 +11,9 @@ import ModalProvider from '../context/ModalContext';
 import SpotifyLogin from '../screens/spotifyLogin';
 import Library from '../screens/library';
 import Playlist from '../screens/playlist';
-import GeneratePlaylist from '../screens/generatePlaylist';
 import PlaylistGenerator from '../screens/playlistGenerator';
 import ConfigurePlaylist from '../screens/configurePlaylist';
-import GeneratePlaylist2 from '../screens/generatePlaylist2';
+import CategoriesGeneratePlaylist from '../screens/categoriesGeneratePlaylist';
 import Profil from '../screens/profil';
 import Player from '../components/Player';
 
@@ -83,19 +82,8 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="GeneratePlaylist"
-        component={GeneratePlaylist}
-        options={{
-          headerShown: false,
-          tabBarItemStyle: {
-            display: 'none',
-          },
-        }}
-      />
-
-      <Tab.Screen
-        name="GeneratePlaylist2"
-        component={GeneratePlaylist2}
+        name="CategoriesGeneratePlaylist"
+        component={CategoriesGeneratePlaylist}
         options={{
           unmountOnBlur: true,
           headerShown: false,

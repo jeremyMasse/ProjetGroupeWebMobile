@@ -9,7 +9,7 @@ const CardGrid = props => {
         <Image
           style={{width: '100%', height: 200}}
           source={{
-            uri: props.img,
+            uri: props.img || 'https://robohash.org/?set=set4',
           }}
         />
         <GridTitle>{props.title}</GridTitle>
