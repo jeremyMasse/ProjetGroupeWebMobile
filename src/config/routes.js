@@ -75,6 +75,7 @@ const TabNavigator = () => {
         name="ConfigurePlaylist"
         component={ConfigurePlaylist}
         options={{
+          unmountOnBlur: true,
           headerShown: false,
           tabBarItemStyle: {
             display: 'none',

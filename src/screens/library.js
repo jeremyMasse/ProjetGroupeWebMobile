@@ -21,7 +21,7 @@ const Library = () => {
   const {handleSnapPress} = useContext(ModalContext);
   const {handleClosePress} = useContext(ModalContext);
   const {user} = useSelector(state => state.user);
-  const token = useSelector(state => state.user.token);
+  const token = useSelector(state => state.user.token?.access_token);
 
   const [playlists, setPlaylists] = useState([]);
 
@@ -39,7 +39,7 @@ const Library = () => {
       axios
         .get(`https://api.spotify.com/v1/users/${user.id}/playlists`, {
           headers: {
-            Authorization: `Bearer ${token.access_token}`,
+            Authorization: `Bearer ${token}`,
           },
           params: {
             limit: 10,
