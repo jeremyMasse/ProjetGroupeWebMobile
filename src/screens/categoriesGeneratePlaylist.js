@@ -5,12 +5,18 @@ import {useSelector} from 'react-redux';
 import Title from '../components/Title';
 import CardGrid from '../components/CardGrid';
 import {useTranslation} from 'react-i18next';
+import LottieView from 'lottie-react-native';
+import GirlListenMusic from '../assets/81966-girl-listening-to-music.json';
+import {handlePlay} from '../services/Player.service';
+import {player, saveTrack} from '../actions/player';
+import {err} from 'react-native-svg/lib/typescript/xml';
 
 const PlaylistGenerator = () => {
   const navigation = useNavigation();
   const {t} = useTranslation();
 
   const {user} = useSelector(state => state.user);
+
   return (
     <GeneratorView>
       <LibraryHeader>
