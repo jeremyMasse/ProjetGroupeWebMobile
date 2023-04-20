@@ -6,11 +6,13 @@ import CardRow from '../components/CardRow';
 import {useNavigation} from '@react-navigation/native';
 import ActionRow from '../components/ActionRow';
 import Share from 'react-native-share';
-// create context
+import {deleteTrackFromPlaylist} from '../services/Playlist.service';
+import {user} from '../reducers/user';
 export const ModalContext = createContext(null);
 
 const ModalProvider = props => {
   const dispatch = useDispatch();
+  const {token} = useSelector(state => state.user);
   const {modal} = useSelector(state => state.modal);
   const type = useSelector(state => state.modal.type);
   const navigation = useNavigation();
@@ -106,7 +108,21 @@ const ModalProvider = props => {
               title={modal.track?.name}
               artist={modal.track?.artists?.map(artist => `${artist.name}, `)}
             />
-            <Text>Test</Text>
+            <ActionRow
+              title="Remove from this playlist"
+              icon="remove-circle-outline"
+              onPress={() =>
+                deleteTrackFromPlaylist(
+                  token,
+                  modal.playlist.id,
+                  modal.track.track.uri,
+                  modal.track.track.name,
+                  modal.playlist.name,
+                  modal.setTracks,
+                )
+              }
+            />
+            <ActionRow title="Share" icon="share-social-outline" />
           </>
         )}
       </BottomSheet>

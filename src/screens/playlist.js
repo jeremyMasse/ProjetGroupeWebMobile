@@ -4,10 +4,9 @@ import styled from 'styled-components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-
 import Icon from 'react-native-vector-icons/Ionicons';
 import {ModalContext} from '../context/ModalContext';
-
+import TrackPlayer from 'react-native-track-player';
 //Components
 import ActionRow from '../components/ActionRow';
 import Player from '../components/Player';
@@ -23,6 +22,7 @@ import {
   getPlaylistTracks,
   deleteTrackFromPlaylist,
 } from '../services/Playlist.service';
+import {handlePlay} from '../services/Player.service';
 
 const Playlist = ({route}) => {
   console.log('test');
@@ -57,74 +57,97 @@ const Playlist = ({route}) => {
       .catch(error => console.log(error));
   }, [route.params.playlist]);
 
-  const handlePlay = track => {
-    // Get the user's available devices
-    // axios.get('https://api.spotify.com/v1/me/player/devices', {
-    //   headers: {
-    //     Authorization: `Bearer ${token}`
-    //   }
-    // }).then(response => {
-    //   const devices = response.data.devices;
-    //   console.log(response);
-    //   // Find an active device and start playback
-    //   const activeDevice = devices.find(device => device.is_active);
-    //   if (activeDevice) {
-    //     axios.put('https://api.spotify.com/v1/me/player/play', {
-    //       uris: [`${track.track.uri}`],
-    //       position_ms: 0
-    //     }, {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //         'Content-Type': 'application/json',
-    //       }
-    //     }).then(response => {
-    //       console.log(response);
-    //     }).catch(error => {
-    //       console.log(error);
-    //     });
-    //   } else {
-    //     // Transfer playback to the first available device
-    //     const firstDevice = devices[0];
-    //     axios.put(`https://api.spotify.com/v1/me/player`, {
-    //       device_ids: [firstDevice.id],
-    //       play: true
-    //     }, {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //         'Content-Type': 'application/json',
-    //       }
-    //     }).then(response => {
-    //       console.log(response);
-    //       // Start playback after transferring device
-    //       axios.put('https://api.spotify.com/v1/me/player/play', {
-    //         uris: [`${track.track.uri}`],
-    //         position_ms: 0
-    //       }, {
-    //         headers: {
-    //           Authorization: `Bearer ${token}`,
-    //           'Content-Type': 'application/json',
-    //         }
-    //       }).then(response => {
-    //         console.log(response);
-    //       }).catch(error => {
-    //         console.log(error);
-    //       });
-    //     }).catch(error => {
-    //       console.log(error);
-    //     });
-    //   }
-    // }).catch(error => {
-    //   console.log(error.response.status);
-    //   console.log(error.response.data);
-    // });
-    console.log(token);
-    dispatch(player(true));
-    dispatch(saveTrack(track));
-  };
+  // const handlePlay = async track => {
+  // Get the user's available devices
+
+  // axios
+  //   .get('https://api.spotify.com/v1/me/player/devices', {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   })
+  //   .then(response => {
+  //     const devices = response.data.devices;
+  //     // console.log(response.data.devices);
+  //     // Find an active device and start playback
+  //     const activeDevice = devices.find(device => device.is_active);
+  //     if (activeDevice) {
+  //       axios
+  //         .put(
+  //           'https://api.spotify.com/v1/me/player/play',
+  //           {
+  //             uris: [`${track.track.uri}`],
+  //             position_ms: 0,
+  //           },
+  //           {
+  //             headers: {
+  //               Authorization: `Bearer ${token}`,
+  //               'Content-Type': 'application/json',
+  //             },
+  //           },
+  //         )
+  //         .then(response => {
+  //           // console.log(response);
+  //         })
+  //         .catch(error => {
+  //           console.log(error);
+  //         });
+  //     } else {
+  //       // Transfer playback to the first available device
+  //       const firstDevice = devices[0];
+  //       axios
+  //         .put(
+  //           'https://api.spotify.com/v1/me/player',
+  //           {
+  //             device_ids: [firstDevice.id],
+  //             play: true,
+  //           },
+  //           {
+  //             headers: {
+  //               Authorization: `Bearer ${token}`,
+  //               'Content-Type': 'application/json',
+  //             },
+  //           },
+  //         )
+  //         .then(response => {
+  //           // Start playback after transferring device
+  //           axios
+  //             .put(
+  //               'https://api.spotify.com/v1/me/player/play',
+  //               {
+  //                 uris: [`${track.track.uri}`],
+  //                 position_ms: 0,
+  //               },
+  //               {
+  //                 headers: {
+  //                   Authorization: `Bearer ${token}`,
+  //                   'Content-Type': 'application/json',
+  //                 },
+  //               },
+  //             )
+  //             .then(response => {
+  //               // console.log(response.data);
+  //             })
+  //             .catch(error => {
+  //               console.log(error);
+  //             });
+  //         })
+  //         .catch(error => {
+  //           console.log(error);
+  //         });
+  //     }
+  //   })
+  //   .catch(error => {
+  //     // console.log(error.response.status);
+  //     // console.log(error.response.data);
+  //   });
+  //   console.log(token);
+  //   dispatch(player(true));
+  //   dispatch(saveTrack(track));
+  // };
 
   return (
     <PlaylistView>
-      <Text>Test</Text>
       <PlaylistHeader>
         <Icon
           name="arrow-back"
@@ -153,7 +176,13 @@ const Playlist = ({route}) => {
       </PlaylistHeader>
       {tracks &&
         tracks.map(track => (
-          <Touchable onPress={() => handlePlay(track)} key={track.id}>
+          <Touchable
+            onPress={() => {
+              handlePlay(track.track);
+              dispatch(player(true));
+              dispatch(saveTrack(track.track));
+            }}
+            key={track.id}>
             <CardRow
               key={track.track.id}
               title={track.track.name}

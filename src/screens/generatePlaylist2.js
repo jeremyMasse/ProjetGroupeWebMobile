@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   searchSong,
   createPlaylist,
@@ -12,10 +12,13 @@ import CardRow from '../components/CardRow';
 import Title from '../components/Title';
 import LottieView from 'lottie-react-native';
 import GirlListenMusic from '../assets/81966-girl-listening-to-music.json';
+import {handlePlay} from '../services/Player.service';
+import {player, saveTrack} from '../actions/player';
 
 const Home = ({route, navigation}) => {
   const token = useSelector(state => state.user.token);
   const {user} = useSelector(state => state.user);
+  const dispatch = useDispatch();
   // console.log(token);
   const [playlistName, setPlaylistName] = useState('Playlist name');
 
@@ -138,16 +141,23 @@ const Home = ({route, navigation}) => {
             value={playlistName}
             onChangeText={handleNameChange}
           />
-          {trackList.tracks.items.map(song => (
-            <CardRow
-              key={song.id}
-              img={song.album.images[0].url}
-              width={50}
-              height={50}
-              title={song.name}
-              artist={song.artists[0].name}
-              hasActions={true}
-            />
+          {trackList.tracks.items.map(track => (
+            <Touchable
+              onPress={() => {
+                handlePlay(track);
+                dispatch(player(true));
+                dispatch(saveTrack(track));
+              }}>
+              <CardRow
+                key={track.id}
+                img={track.album.images[0].url}
+                width={50}
+                height={50}
+                title={track.name}
+                artist={track.artists[0].name}
+                hasActions={true}
+              />
+            </Touchable>
           ))}
 
           <StyledTouchable
@@ -215,5 +225,7 @@ const LoadingContainer = styled.View`
 const LoadingIndicator = styled.ActivityIndicator`
   margin-top: 20px;
 `;
+
+const Touchable = styled.TouchableOpacity``;
 
 export default Home;

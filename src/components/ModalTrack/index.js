@@ -3,7 +3,7 @@ import {Modal} from 'react-native';
 import styled from 'styled-components';
 import CardRow from '../CardRow';
 
-const ModalActions = props => {
+const ModalTrack = props => {
   return (
     <Modal
       animationType="slide"
