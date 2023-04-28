@@ -29,7 +29,6 @@ export const requestAccessToken = async (
         },
       },
     );
-    console.log(response);
 
     return response.data;
   } catch (err) {
@@ -42,7 +41,7 @@ export const fetchUserData = async accessToken => {
   try {
     const headers = {Authorization: `Bearer ${accessToken}`};
     const response = await axios.get(`${SPOTIFY_API_BASE_URL}/me`, {headers});
-    console.log(response);
+
     return response.data;
   } catch (err) {
     console.log(err);

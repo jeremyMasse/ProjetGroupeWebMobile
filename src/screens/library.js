@@ -1,7 +1,6 @@
 import React, {useState, useContext} from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {ModalContext} from '../context/ModalContext';

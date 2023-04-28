@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Button, View, Text, Linking, Image} from 'react-native';
+import {Linking} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
@@ -7,7 +7,6 @@ import {useNavigation} from '@react-navigation/native';
 
 import LottieView from 'lottie-react-native';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CLIENT_ID, CLIENT_SECRET, REDIRECT_URI} from '@env';
 import {
   requestAccessToken,
@@ -78,13 +77,6 @@ const SpotifyLogin = () => {
     // Start loading the interstitial straight away
     load();
   }, [load]);
-
-  // useEffect(() => {
-  //   if (isClosed) {
-  //     // Action after the ad is closed
-  //     // navigation.navigate('SpotifyLogin');
-  //   }
-  // }, [isClosed, navigation]);
 
   useEffect(() => {
     if (isLoaded === true) {

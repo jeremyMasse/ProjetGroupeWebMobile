@@ -1,16 +1,10 @@
 import React, {useEffect, useState, useContext} from 'react';
-import {Text} from 'react-native';
 import styled from 'styled-components';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import axios from 'axios';
+import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {ModalContext} from '../context/ModalContext';
-import TrackPlayer from 'react-native-track-player';
-import {useTranslation} from 'react-i18next';
 
 //Components
-import ActionRow from '../components/ActionRow';
 import Player from '../components/Player';
 import CardRow from '../components/CardRow';
 import Title from '../components/Title';
@@ -20,32 +14,33 @@ import {saveModal, saveType} from '../actions/modal';
 import {useDispatch, useSelector} from 'react-redux';
 import {player, saveTrack} from '../actions/player';
 
-import {
-  getPlaylist,
-  getPlaylistTracks,
-  deleteTrackFromPlaylist,
-} from '../services/Playlist.service';
+import {getPlaylist, getPlaylistTracks} from '../services/Playlist.service';
 import {handlePlay} from '../services/Player.service';
 
 const Playlist = ({route}) => {
   const navigation = useNavigation();
-  const {t} = useTranslation();
   const dispatch = useDispatch();
   const {user} = useSelector(state => state.user);
-  const {handleSnapPress} = useContext(ModalContext);
+  const {handleSnapPress, setModalPlaylist, modalTracks, setModalTracks} =
+    useContext(ModalContext);
   const token = useSelector(state => state.user.token);
 
   const [playlist, setPlaylist] = useState([]);
   const [tracks, setTracks] = useState([]);
 
-  const isPlaying = useSelector(state => state.player.isPlaying);
-  const track = useSelector(state => state.player.track);
-
-  const handleModal = async (track, playlist) => {
-    await handleSnapPress(0, playlist);
+  const handleModal = async (track, playlist, tracks) => {
+    await handleSnapPress(0);
+    setModalPlaylist(playlist);
+    setModalTracks(tracks);
     dispatch(saveModal(track));
     dispatch(saveType('track'));
   };
+
+  useEffect(() => {
+    if (modalTracks !== [] && modalTracks !== tracks) {
+      setTracks(modalTracks);
+    }
+  }, [modalTracks]);
 
   useEffect(() => {
     const playlist_id = route.params.playlist;
@@ -104,7 +99,7 @@ const Playlist = ({route}) => {
               width={50}
               height={50}
               hasActions={true}
-              onPress={() => handleModal(track)}
+              onPress={() => handleModal(track, playlist, tracks, setTracks)}
             />
           </Touchable>
         ))}

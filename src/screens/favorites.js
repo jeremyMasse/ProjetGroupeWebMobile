@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import Icon from 'react-native-vector-icons/Ionicons';
 import {useSelector} from 'react-redux';
 import {getFavorites} from '../services/Track.service';
 import CardRow from '../components/CardRow';
@@ -11,9 +10,7 @@ const Favorites = ({navigation}) => {
   const token = useSelector(state => state.user.token);
   const {user} = useSelector(state => state.user);
   useEffect(() => {
-    getFavorites(token.access_token)
-      .then(res => setFavorites(res))
-      .catch(err => console.log(err));
+    getFavorites(token.access_token).then(res => setFavorites(res));
   }, []);
 
   return (

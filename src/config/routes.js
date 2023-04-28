@@ -93,7 +93,6 @@ const TabNavigator = () => {
           },
         }}
       />
-
       <Tab.Screen
         name="Library"
         component={Library}
@@ -110,7 +109,6 @@ const TabNavigator = () => {
           },
         }}
       />
-
       <Tab.Screen
         name="Playlist"
         component={Playlist}
@@ -121,18 +119,17 @@ const TabNavigator = () => {
           },
         }}
       />
-
       <Tab.Screen
         name="Favorites"
         component={Favorites}
         options={{
           headerShown: false,
+          unmountOnBlur: true,
           tabBarItemStyle: {
             display: 'none',
           },
         }}
       />
-
       <Tab.Screen
         name="Profil"
         component={Profil}

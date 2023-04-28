@@ -1,5 +1,5 @@
-import {ActivityIndicator, Text, View, Image} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {ActivityIndicator} from 'react-native';
+import {useSelector} from 'react-redux';
 import Profile from '../components/ProfilUser';
 import LottieView from 'lottie-react-native';
 import GirlListenMusic from '../assets/81966-girl-listening-to-music.json';

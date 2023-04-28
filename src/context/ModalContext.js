@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import CardRow from '../components/CardRow';
 import {useNavigation} from '@react-navigation/native';
 import ActionRow from '../components/ActionRow';
@@ -20,25 +20,20 @@ export const ModalContext = createContext(null);
 const ModalProvider = props => {
   const navigation = useNavigation();
   const {t} = useTranslation();
-  const dispatch = useDispatch();
   const token = useSelector(state => state.user.token);
   const {modal} = useSelector(state => state.modal);
   const type = useSelector(state => state.modal.type);
-  const [playlist, setPlaylist] = useState([]);
+  const [modalPlaylist, setModalPlaylist] = useState([]);
+  const [modalTracks, setModalTracks] = useState([]);
 
   // hooks
   const sheetRef = useRef(null);
   const snapPoints = useMemo(() => ['25%', '70%'], []);
 
-  // callbacks
-  const handleSheetChange = useCallback(index => {
-    console.log('handleSheetChange', index);
-  }, []);
-  const handleSnapPress = useCallback((index, playlist) => {
+  const handleSnapPress = useCallback(index => {
     sheetRef.current?.snapToIndex(index);
-    setPlaylist(playlist);
-    console.log(playlist);
   }, []);
+
   const handleClosePress = useCallback(() => {
     sheetRef.current?.close();
   }, []);
@@ -58,15 +53,24 @@ const ModalProvider = props => {
   };
 
   const handleDelete = async () => {
-    const res = await deleteTrackFromPlaylist(
-      token.access_token,
-      playlist.id,
-      modal.track.uri,
-      modal.track.name,
-      playlist.name,
-      // modal.setTracks,
-    );
-    console.log(res, 'res');
+    try {
+      const res = await deleteTrackFromPlaylist(
+        token.access_token,
+        modalPlaylist.id,
+        modal.track.uri,
+        modal.track.name,
+        modalPlaylist.name,
+      );
+      if (res.snapshot_id) {
+        const updatedGlobalTracks = modalTracks.filter(
+          track => track.id !== modal.track.id,
+        );
+
+        setModalTracks(updatedGlobalTracks);
+      }
+    } catch (error) {
+      console.log('Error while deleting track:', error);
+    }
   };
 
   return (
@@ -74,16 +78,17 @@ const ModalProvider = props => {
       value={{
         sheetRef,
         snapPoints,
-        handleSheetChange,
         handleSnapPress,
         handleClosePress,
+        setModalPlaylist,
+        setModalTracks,
+        modalTracks,
       }}>
       {props.children}
       <BottomSheet
         index={-1}
         ref={sheetRef}
         snapPoints={snapPoints}
-        onChange={handleSheetChange}
         enablePanDownToClose={true}
         backgroundStyle={{
           backgroundColor: '#383737',

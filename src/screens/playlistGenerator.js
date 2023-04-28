@@ -32,8 +32,6 @@ const Home = ({route, navigation}) => {
     tracks: {items: []},
   });
 
-  const [trackUris, setTrackUris] = useState([]);
-
   const [playlist, setPlaylist] = useState([]);
   const [loadingTrackList, setloadingTrackList] = useState(true);
   const [loadingPlaylist, setloadingPlaylist] = useState(true);
@@ -92,7 +90,7 @@ const Home = ({route, navigation}) => {
       );
       results = JSON.parse(openaiResponse.data.choices[0].message.content);
     }
-    console.log(results.songs);
+
     let items = [];
     await Object.entries(results.songs).map(([key, song]) => {
       searchSong(token, song)
@@ -110,9 +108,6 @@ const Home = ({route, navigation}) => {
         .catch(err => console.log('err: ', err))
         .finally(() => {
           setloadingTrackList(false);
-          // trackList.tracks.items.map(item => {
-          //   console.log(item.uri);
-          // });
         });
     });
   };
@@ -128,20 +123,11 @@ const Home = ({route, navigation}) => {
           setPlaylist(res);
           console.log(res);
         })
-        .catch(error => {
-          console.log('ici', error);
-        })
+        .catch(error => {})
         .finally(() => {
           setloadingPlaylist(false);
         });
     }
-    // console.log(token, playlist.id{}, trackUris);
-    // return () => {
-    //   setPlaylist([]);
-    //   setTrackList({tracks: {items: []}});
-    //   setloadingPlaylist(true);
-    //   setloadingTrackList(true);
-    // };
   }, []);
 
   const addToSpotify = async => {
@@ -220,9 +206,9 @@ const Home = ({route, navigation}) => {
           <StyledTouchable
             onPress={() => {
               addToSpotify();
-              onDisplayNotification(playlistName)
-                .then(() => console.log('generate notif'))
-                .catch(err => console.log(err));
+              onDisplayNotification(playlistName).catch(err =>
+                console.log(err),
+              );
             }}>
             <StyledText>Add Playlist to Spotify</StyledText>
           </StyledTouchable>
@@ -282,10 +268,6 @@ const LoadingContainer = styled.View`
   align-items: center;
   justify-content: center;
   background-color: #000000;
-`;
-
-const LoadingIndicator = styled.ActivityIndicator`
-  margin-top: 20px;
 `;
 
 const Touchable = styled.TouchableOpacity``;

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
-import {View, Image, Text, Switch, Touchable} from 'react-native';
+import {Switch} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {useTranslation} from 'react-i18next';
 import {useSelector, useDispatch} from 'react-redux';
@@ -96,10 +96,7 @@ const Profil = ({user}) => {
 
 const ProfileContainer = styled.View`
   flex: 1;
-  background: ${({theme}) => {
-    console.log(theme);
-    return theme.theme.background;
-  }};
+  background: ${({theme}) => theme.theme.background};
   align-items: center;
   padding: 20px;
 `;

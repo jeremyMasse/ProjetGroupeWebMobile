@@ -1,10 +1,6 @@
 // services/spotifyService.js
 import axios from 'axios';
-import base64 from 'react-native-base64';
 import Toast from 'react-native-toast-message';
-
-const SPOTIFY_API_BASE_URL = 'https://api.spotify.com/v1';
-const SPOTIFY_AUTH_BASE_URL = 'https://accounts.spotify.com';
 
 export const getPlaylist = async (access_token, playlist_id) => {
   const headers = {Authorization: `Bearer ${access_token}`};
@@ -44,10 +40,9 @@ export const deleteTrackFromPlaylist = (
   track_uri,
   track_name,
   playlist_name,
-  // setTracks,
 ) => {
   const headers = {Authorization: `Bearer ${access_token}`};
-  const res = axios({
+  return axios({
     method: 'delete',
     url: `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`,
     headers,
@@ -65,6 +60,7 @@ export const deleteTrackFromPlaylist = (
         text1: `${track_name}`,
         text2: `has been removed from ${playlist_name}`,
       });
+      return response.data;
     })
     .catch(error => {
       console.log(error);
@@ -72,7 +68,6 @@ export const deleteTrackFromPlaylist = (
         type: 'error',
         text1: 'An error occured',
       });
+      throw error; // Vous pouvez propager l'erreur pour la gérer à l'extérieur de la fonction
     });
-
-  return res.data;
 };
